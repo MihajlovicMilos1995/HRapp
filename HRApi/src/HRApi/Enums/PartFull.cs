@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace HRApi.Models
+namespace HRApi.Enums
 {
-    public class Company
+    public class PartFull
     {
+        public enum PartFull
+        {
 
+        }
     }
 }
