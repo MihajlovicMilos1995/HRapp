@@ -18,12 +18,6 @@ namespace HRApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-
-            var connectionString =
-               @"Data Source=.\SQLEXPRESS;Initial Catalog=HRInfoDB;Integrated Security=True;MultipleActiveResultSets=True";
-
-            services.AddDbContext<HRInfoContext>
-                (p => p.UseSqlServer(connectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
