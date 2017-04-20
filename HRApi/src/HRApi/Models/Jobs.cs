@@ -10,5 +10,93 @@ namespace HRApi.Models
 {
     public class Jobs
     {
+        private string name;
+        private string jobDesc;
+        private string jobCity;
+        private string jobCountry;
+        private PartFull jobPartFull;
+        private string jobKeyword;
+
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public int JobId { get; set; }
+
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+
+            set
+            {
+                name = value;
+            }
+        }
+
+        public string JobDesc
+        {
+            get
+            {
+                return jobDesc;
+            }
+
+            set
+            {
+                jobDesc = value;
+            }
+        }
+
+        public string JobCity
+        {
+            get
+            {
+                return jobCity;
+            }
+
+            set
+            {
+                jobCity = value;
+            }
+        }
+
+        public string JobCountry
+        {
+            get
+            {
+                return jobCountry;
+            }
+
+            set
+            {
+                jobCountry = value;
+            }
+        }
+
+        public PartFull JobPartFull
+        {
+            get
+            {
+                return jobPartFull;
+            }
+
+            set
+            {
+                jobPartFull = value;
+            }
+        }
+
+        public string JobKeyword
+        {
+            get
+            {
+                return jobKeyword;
+            }
+
+            set
+            {
+                jobKeyword = value;
+            }
+        }
     }
 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace HRApi.Models
 {
-    public class HRInfoContext : DbContext
+    public class HRContext : DbContext
     {
-        public HRInfoContext(DbContextOptions<HRInfoContext> options) : base(options)
+        public HRContext(DbContextOptions<HRContext> options) : base(options)
         {
             Database.EnsureCreated();
         }
@@ -21,3 +21,4 @@ namespace HRApi.Models
     }
 }
 }
+ 
