@@ -7,6 +7,5 @@ namespace HRApi.Models
 {
     public class Company
     {
-
     }
 }
