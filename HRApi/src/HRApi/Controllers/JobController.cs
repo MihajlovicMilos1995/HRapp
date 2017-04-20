@@ -10,12 +10,17 @@ namespace HRApi.Controllers
     [Route("api/[controller]")]
     public class JobController : Controller
     {
-        private HRContext _ctx;
+        private HRContext _jobctx;
+
+        public JobController(HRContext job)
+        {
+            _jobctx = job;
+        }
 
         [HttpGet("GetJob")]
         public IEnumerable<Job> GetJob()
         {
-            return _ctx.Jobs.ToList();
+            return _jobctx.Jobs.ToList();
         }
 
         [HttpPost("CreateJob")]
@@ -26,8 +31,8 @@ namespace HRApi.Controllers
                     return BadRequest();
             }
 
-            _ctx.Add(jobs);
-            _ctx.SaveChanges();
+            _jobctx.Add(jobs);
+            _jobctx.SaveChanges();
 
             return Created("api/usercontroller", jobs);
         }
@@ -41,7 +46,7 @@ namespace HRApi.Controllers
                 return BadRequest();
             }
 
-            var todo = _ctx.Jobs.Find(jobs);
+            var todo = _jobctx.Jobs.Find(jobs);
             if (todo == null)
             {
                 return NotFound();
@@ -54,7 +59,7 @@ namespace HRApi.Controllers
             todo.JobPartFull = jobs.JobPartFull;
             todo.JobKeyword = jobs.JobKeyword;
            
-            _ctx.SaveChanges();
+            _jobctx.SaveChanges();
 
             return Ok();
         }
@@ -62,13 +67,13 @@ namespace HRApi.Controllers
         [HttpDelete("DeleteJob/{JobId}")]
         public IActionResult DeleteJob(int JobId)
         {
-            var todo = _ctx.Jobs.Find(JobId);
+            var todo = _jobctx.Jobs.Find(JobId);
             if (todo == null)
             {
                 return NotFound();
             }
-            _ctx.Jobs.Remove(todo);
-            _ctx.SaveChanges();
+            _jobctx.Jobs.Remove(todo);
+            _jobctx.SaveChanges();
 
             return Ok();
         }
