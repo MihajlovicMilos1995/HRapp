@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HRApi.Models
 {
-    public class Jobs
+    public class Job
     {
         private string name;
         private string jobDesc;
