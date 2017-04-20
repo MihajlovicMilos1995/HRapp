@@ -9,21 +9,16 @@ namespace HRApi.Models
 {
     public class AutoGenHistory
     {
-        public class AutoGenWorkHistory
-        {
-            [Key]
-            [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-            public int AutoGenId { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public int AutoGenHistoryId { get; set; }
 
-            public ICollection<JobPosition> Jobs { get; set; }
+        public ICollection<Job> Jobs { get; set; }
 
-            [ForeignKey("RegUserId")]
-            public RegUser RegUser { get; set; }
-            public int RegUserId { get; set; }
-
-            [ForeignKey("JobPositionId")]
-            public Jobs JobPos { get; set; }
-            public int JobPositionId { get; set; }
-        }
+        [ForeignKey("RegUserId")]
+        public RegUser RegUser { get; set; }
+        public int RegUserId { get; set; }
+        [ForeignKey("JobId") ]
+        public Job Job { get; set; }
+        public int JobId { get; set; }
     }
 }

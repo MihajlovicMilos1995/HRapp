@@ -126,7 +126,7 @@ namespace HRApi.Models
                 regUserKeyword = value;
             }
         }
-        public AutoGenWorkHistory WorkHistory { get; set; }
+        public AutoGenHistory WorkHistory { get; set; }
     }
 }
-}
+

@@ -14,11 +14,11 @@ namespace HRApi.Models
         }
 
         public DbSet<RegUser> RegUsers { get; set; }
-        public DbSet<Jobs> Jobs { get; set; }
+        public DbSet<Job> Jobs { get; set; }
         public DbSet<Company> Companies { get; set; }
 
         public DbSet<AutoGenHistory> History { get; set; }
     }
 }
-}
+
  

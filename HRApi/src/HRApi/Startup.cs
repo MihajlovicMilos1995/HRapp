@@ -19,7 +19,7 @@ namespace HRApi
             services.AddMvc();
 
             var connectionString =
-               @"Data Source=.\SQLEXPRESS;Initial Catalog=HRInfoDB;Integrated Security=True;MultipleActiveResultSets=True";
+               @"Data Source=.\SQLEXPRESS;Initial Catalog=HRInfoDB3;Integrated Security=True;MultipleActiveResultSets=True";
 
             services.AddDbContext<HRContext>
                 (p => p.UseSqlServer(connectionString));
@@ -34,18 +34,17 @@ namespace HRApi
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.Run(async (context) =>
+            else
             {
-                await context.Response.WriteAsync("Hello World!");
-            });
+                app.UseExceptionHandler();
+            }
 
             app.UseMvc(config =>
             {
                 config.MapRoute(
                     name: "Default",
                     template: "{controller}/{action}/{id?}",
-                    defaults: new { controller = "General", action = "GetAllJobs" });
+                    defaults: new { controller = "User", action = "GetUser" });
             });
         }
     }
