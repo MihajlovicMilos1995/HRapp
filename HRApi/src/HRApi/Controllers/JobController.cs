@@ -13,13 +13,13 @@ namespace HRApi.Controllers
         private HRContext _ctx;
 
         [HttpGet("GetJob")]
-        public IEnumerable<Jobs> GetJob()
+        public IEnumerable<Job> GetJob()
         {
             return _ctx.Jobs.ToList();
         }
 
         [HttpPost("CreateJob")]
-        public IActionResult CreateJob([FromBody] Jobs jobs)
+        public IActionResult CreateJob([FromBody] Job jobs)
         {
             if (jobs== null)
             {
@@ -31,9 +31,10 @@ namespace HRApi.Controllers
 
             return Created("api/usercontroller", jobs);
         }
+                
 
         [HttpPut("EditJob/{JobId}")]
-        public IActionResult EditJob([FromBody] Jobs jobs, int JobId)
+        public IActionResult EditJob([FromBody] Job jobs, int JobId)
         {
             if (jobs == null)
             {
