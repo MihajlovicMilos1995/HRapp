@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HRApi.Controllers
 {
-    [Route("api/controller]")]
+    [Route("api/[controller]")]
     public class UserController : Controller
     {
         private HRContext _ctx;
