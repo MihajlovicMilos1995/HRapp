@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace HRApi.Controllers
 {
@@ -9,10 +11,25 @@ namespace HRApi.Controllers
     public class UserController : Controller
     {
         private HRContext _ctx;
+        private UserManager<IdentityUser> _userManager;
 
-        public UserController(HRContext ctx)
+        public UserController(HRContext ctx,UserManager<IdentityUser> UserManager)
         {
             _ctx = ctx;
+            _userManager = UserManager;
+        }
+
+        [HttpPost("adduser")]
+        public IActionResult AddUser()
+        {
+            var user = new IdentityUser()
+            {
+                UserName = "Ultradumb",
+                Email = "milos@people.com"
+            };
+
+            var id = _userManager.CreateAsync(user, "sifra").Result;
+            return new NoContentResult();
         }
 
         [HttpGet("GetUser")]

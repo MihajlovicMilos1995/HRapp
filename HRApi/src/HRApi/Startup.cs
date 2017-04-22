@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using HRApi.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 
 namespace HRApi
 {
@@ -33,7 +30,12 @@ namespace HRApi
             services.AddIdentity<IdentityUser, IdentityRole>(config =>
             {
                 config.User.RequireUniqueEmail = true;
-                config.Password.RequiredLength = 6;
+                config.Password.RequiredLength = 2;
+                config.Password.RequireDigit = false;
+                config.Password.RequireNonAlphanumeric = false;
+                config.Password.RequireUppercase = false;
+                config.Password.RequireLowercase = false;
+
                 config.Cookies.ApplicationCookie.LoginPath = "/Auth/Login";
                 config.Cookies.ApplicationCookie.Events = new CookieAuthenticationEvents()
                 {
@@ -53,33 +55,15 @@ namespace HRApi
                 };
             })
            .AddEntityFrameworkStores<HRContext>();
-
-            //         services.Configure<IdentityOptions>(options =>
-            //         {
-            //             // Password settings
-            //             options.Password.RequireDigit = false;
-            //             options.Password.RequiredLength = 2;
-            //             options.Password.RequireNonAlphanumeric = false;
-            //             options.Password.RequireUppercase = false;
-            //             options.Password.RequireLowercase = false;
-            //
-            //             // Lockout settings
-            //             options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
-            //             options.Lockout.MaxFailedAccessAttempts = 10;
-            //
-            //             // Cookie settings
-            //             options.Cookies.ApplicationCookie.ExpireTimeSpan = TimeSpan.FromDays(150);
-            //             options.Cookies.ApplicationCookie.LoginPath = "/Auth/Login";
-            //
-            //             // User settings
-            //             options.User.RequireUniqueEmail = true;
-            //         });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
+
+            ConfigureAuth(app);
+
+            createRolesandUsers();
 
             if (env.IsDevelopment())
             {
@@ -95,8 +79,64 @@ namespace HRApi
                 config.MapRoute(
                     name: "Default",
                     template: "{controller}/{action}/{id?}",
-                    defaults: new { controller = "user", action = "getuser" });
+                    defaults: new { controller = "job", action = "getjob" });
             });
+        }
+
+        public void createRolesandUsers()
+        {
+            HRContext context = new HRContext(options);
+
+            var roleManager = new RoleManager<IdentityRole>
+                (new RoleStore<IdentityRole>(context));
+
+            var UserManager = new UserManager<IdentityUser>
+                (new UserStore<IdentityUser>(context));
+
+
+            if (!roleManager.RoleExistsAsync("SuperUser").Result)
+            {
+
+                // first we create Admin rool   
+                var role = new IdentityRole();
+                role.Name = "SuperUser";
+                roleManager.CreateAsync(role);
+
+                //Here we create a Admin super user who will maintain the website                  
+
+                var user = new IdentityUser();
+                user.UserName = "milos";
+                user.Email = "milos@hrapp.com";
+
+                string userPWD = "sifra";
+
+                var chkUser = UserManager.CreateAsync(user, userPWD).Result;
+
+                //Add default User to Role Admin   
+                if (chkUser.Succeeded)
+                {
+                    var result1 = UserManager.AddToRoleAsync(user, "SuperUser").Result;
+
+                }
+            }
+
+            // creating Creating Manager role    
+            if (roleManager.RoleExistsAsync("Manager").Result == false)
+            {
+                var role = new IdentityRole();
+                role.Name = "HrManager";
+                roleManager.CreateAsync(role);
+
+            }
+
+            // creating Creating Employee role    
+            if (roleManager.RoleExistsAsync("RegUser").Result == false)
+            {
+                var role = new IdentityRole();
+                role.Name = "RegUser";
+                roleManager.CreateAsync(role);
+
+            }
         }
     }
 }
