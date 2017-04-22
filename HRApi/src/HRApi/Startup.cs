@@ -44,7 +44,7 @@ namespace HRApi
                 config.MapRoute(
                     name: "Default",
                     template: "{controller}/{action}/{id?}",
-                    defaults: new { controller = "User", action = "GetUser" });
+                    defaults: new { controller = "user", action = "getuser" });
             });
         }
     }

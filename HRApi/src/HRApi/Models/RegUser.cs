@@ -14,13 +14,13 @@ namespace HRApi.Models
         private string regUserLastName;
         private string regUserCity;
         private string regUserCountry;
-        private YesNo locationChange;
+        private bool locationChange;
         private PartFull regUserPartFull;
         private string workXp;
         private string regUserKeyword;
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        //[Key]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RegUserId { get; set; }
 
         public string RegUserName
@@ -75,7 +75,7 @@ namespace HRApi.Models
             }
         }
 
-        public YesNo LocationChange
+        public bool LocationChange
         {
             get
             {

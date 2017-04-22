@@ -5,12 +5,6 @@ using System.Threading.Tasks;
 
 namespace HRApi.Enums
 {
-    public enum YesNo
-    {
-        Yes,
-        No
-    }
-
     public enum PartFull
     {
         FullTime,

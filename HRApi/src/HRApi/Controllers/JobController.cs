@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HRApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class JobController : Controller
     {
         private HRContext _jobctx;
