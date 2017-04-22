@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace HRApi.Enums
 {
-    public enum PartFull
+    public enum JobType
     {
         FullTime,
         PartTime

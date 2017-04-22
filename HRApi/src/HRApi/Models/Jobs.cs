@@ -14,7 +14,7 @@ namespace HRApi.Models
         private string jobDesc;
         private string jobCity;
         private string jobCountry;
-        private PartFull jobPartFull;
+        private JobType jobPartFull;
         private string jobKeyword;
 
         [Key]
@@ -73,7 +73,7 @@ namespace HRApi.Models
             }
         }
 
-        public PartFull JobPartFull
+        public JobType JobPartFull
         {
             get
             {

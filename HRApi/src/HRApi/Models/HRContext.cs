@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace HRApi.Models
 {
-    public class HRContext : DbContext
+    public class HRContext : IdentityDbContext<IdentityUser>
     {
         public HRContext(DbContextOptions<HRContext> options) : base(options)
         {

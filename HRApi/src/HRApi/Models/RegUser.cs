@@ -15,7 +15,7 @@ namespace HRApi.Models
         private string regUserCity;
         private string regUserCountry;
         private bool locationChange;
-        private PartFull regUserPartFull;
+        private JobType regUserPartFull;
         private string workXp;
         private string regUserKeyword;
 
@@ -88,7 +88,7 @@ namespace HRApi.Models
             }
         }
 
-        public PartFull RegUserPartFull
+        public JobType RegUserPartFull
         {
             get
             {
