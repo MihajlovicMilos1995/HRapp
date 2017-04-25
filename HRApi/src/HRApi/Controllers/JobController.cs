@@ -1,4 +1,5 @@
 ﻿using HRApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace HRApi.Controllers
             _jobctx = job;
         }
 
+        [AllowAnonymous]
         [HttpGet("GetJob")]
         public IEnumerable<Job> GetJob()
         {

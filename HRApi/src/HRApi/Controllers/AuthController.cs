@@ -40,7 +40,7 @@ namespace HRApi.Controllers
                 {
                     if (string.IsNullOrWhiteSpace(returnUrl))
                     {
-                        return RedirectToAction("GetJob", "People");
+                        return RedirectToAction("GetJob", "Job");
                     }
                     else
                     {

@@ -9,7 +9,7 @@ namespace HRApi.Models
 {
     public class HRContext : IdentityDbContext<IdentityUser>
     {
-        public HRContext(DbContextOptions<HRContext> options) : base(options)
+        public HRContext(DbContextOptions options) : base(options)
         {
             Database.EnsureCreated();
         }

@@ -57,13 +57,13 @@ namespace HRApi
            .AddEntityFrameworkStores<HRContext>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
             loggerFactory.AddConsole();
 
-            ConfigureAuth(app);
+            app.UseIdentity();
 
-            createRolesandUsers();
+            createRolesandUsers(roleManager, userManager);
 
             if (env.IsDevelopment())
             {
@@ -79,28 +79,19 @@ namespace HRApi
                 config.MapRoute(
                     name: "Default",
                     template: "{controller}/{action}/{id?}",
-                    defaults: new { controller = "job", action = "getjob" });
+                    defaults: new { controller = "Auth", action = "Login" });
             });
         }
 
-        public void createRolesandUsers()
+        public async void createRolesandUsers(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
-            HRContext context = new HRContext(options);
-
-            var roleManager = new RoleManager<IdentityRole>
-                (new RoleStore<IdentityRole>(context));
-
-            var UserManager = new UserManager<IdentityUser>
-                (new UserStore<IdentityUser>(context));
-
-
             if (!roleManager.RoleExistsAsync("SuperUser").Result)
             {
 
                 // first we create Admin rool   
                 var role = new IdentityRole();
                 role.Name = "SuperUser";
-                roleManager.CreateAsync(role);
+                await roleManager.CreateAsync(role);
 
                 //Here we create a Admin super user who will maintain the website                  
 
@@ -110,32 +101,31 @@ namespace HRApi
 
                 string userPWD = "sifra";
 
-                var chkUser = UserManager.CreateAsync(user, userPWD).Result;
+                var chkUser = await userManager.CreateAsync(user, userPWD);
 
                 //Add default User to Role Admin   
                 if (chkUser.Succeeded)
                 {
-                    var result1 = UserManager.AddToRoleAsync(user, "SuperUser").Result;
-
+                    var result1 = await userManager.AddToRoleAsync(user, "SuperUser");
                 }
             }
 
+            var res = await roleManager.RoleExistsAsync("HrManager");
             // creating Creating Manager role    
-            if (roleManager.RoleExistsAsync("Manager").Result == false)
+            if (res == false)
             {
                 var role = new IdentityRole();
                 role.Name = "HrManager";
-                roleManager.CreateAsync(role);
-
+                await roleManager.CreateAsync(role);
             }
 
+            res = await roleManager.RoleExistsAsync("RegUser");
             // creating Creating Employee role    
-            if (roleManager.RoleExistsAsync("RegUser").Result == false)
+            if (res == false)
             {
                 var role = new IdentityRole();
                 role.Name = "RegUser";
-                roleManager.CreateAsync(role);
-
+                await roleManager.CreateAsync(role);
             }
         }
     }

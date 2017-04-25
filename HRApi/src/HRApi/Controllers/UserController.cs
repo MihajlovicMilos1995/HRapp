@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HRApi.Controllers
 {
@@ -13,31 +14,34 @@ namespace HRApi.Controllers
         private HRContext _ctx;
         private UserManager<IdentityUser> _userManager;
 
-        public UserController(HRContext ctx,UserManager<IdentityUser> UserManager)
+        public UserController(HRContext ctx, UserManager<IdentityUser> UserManager)
         {
             _ctx = ctx;
             _userManager = UserManager;
         }
 
-        [HttpPost("adduser")]
-        public IActionResult AddUser()
-        {
-            var user = new IdentityUser()
-            {
-                UserName = "Ultradumb",
-                Email = "milos@people.com"
-            };
+        //  [HttpPost("adduser")]
+        //  public IActionResult AddUser()
+        //  {
+        //      var user = new IdentityUser()
+        //      {
+        //          UserName = "Ultradumb",
+        //          Email = "milos@people.com"
+        //      };
+        //
+        //      var id = _userManager.CreateAsync(user, "sifra").Result;
+        //      return new NoContentResult();
+        //  }
 
-            var id = _userManager.CreateAsync(user, "sifra").Result;
-            return new NoContentResult();
-        }
-
+        [Authorize(Roles = "SuperUser,HrManager")]
         [HttpGet("GetUser")]
         public IEnumerable<RegUser> GetUser()
         {
             return _ctx.RegUsers.ToList();
         }
 
+
+        [Authorize(Roles = "RegUser,SuperUser,HrManager")]
         [HttpPost("CreateUser")]
         public IActionResult CreateUser([FromBody] RegUser regUser)
         {
@@ -51,6 +55,8 @@ namespace HRApi.Controllers
             return Created("api/usercontroller", regUser);
         }
 
+
+        [Authorize(Roles = "RegUser,SuperUser,HrManager")]
         [HttpPut("EditUser/{UserId}")]
         public IActionResult EditUser([FromBody] RegUser regUser, int UserId)
         {
@@ -71,14 +77,20 @@ namespace HRApi.Controllers
             todo.RegUserCountry = regUser.RegUserCountry;
             todo.LocationChange = regUser.LocationChange;
             todo.RegUserPartFull = regUser.RegUserPartFull;
-            todo.WorkXp = regUser.WorkXp;
             todo.RegUserKeyword = regUser.RegUserKeyword;
+
+            if (User.Identity.Name == "SuperUser,HrManager")
+            {
+                todo.WorkXp = regUser.WorkXp;
+            }
 
             _ctx.SaveChanges();
 
             return Ok();
         }
 
+
+        [Authorize(Roles = "SuperUser,HrManager")]
         [HttpDelete("deleteUser/{UserId}")]
         public IActionResult deleteUser(int UserId)
         {
