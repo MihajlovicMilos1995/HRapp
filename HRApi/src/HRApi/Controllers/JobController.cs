@@ -54,7 +54,7 @@ namespace HRApi.Controllers
                 return NotFound();
             }
 
-            todo.Name = jobs.Name;
+            todo.JobName = jobs.JobName;
             todo.JobDesc = jobs.JobDesc;
             todo.JobCity = jobs.JobCity;
             todo.JobCountry = jobs.JobCountry;
@@ -79,7 +79,36 @@ namespace HRApi.Controllers
 
             return Ok();
         }
-        
+
+        [HttpGet("SSP")]
+        public IActionResult SearchAndSort([FromQuery]string searchString, [FromQuery] string sortBy, [FromQuery] int page, [FromQuery] int jobsPerPage = 3)
+        {
+            var job = from j in _jobctx.Jobs
+                      select j;
+
+            if (searchString != null)
+            {
+                job = job.Where(j => j.JobName.Contains(searchString)
+                                        || j.JobKeyword.Contains(searchString));
+            }
+
+            if (sortBy == "Des")
+            {
+                job = job.OrderByDescending(j => j.JobName);
+            }
+            else if (sortBy == "Asc")
+            {
+                job = job.OrderBy(j => j.JobName);
+            }
+
+            if (page > 0)
+            {
+                job = job.Skip((page - 1) * jobsPerPage).Take(jobsPerPage);
+            }
+
+            return Ok(job);
+        }
+
 
     }
 }

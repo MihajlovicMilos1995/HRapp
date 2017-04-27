@@ -21,7 +21,7 @@ namespace HRApi.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int JobId { get; set; }
 
-        public string Name
+        public string JobName
         {
             get
             {
