@@ -86,5 +86,33 @@ namespace HRApi.Controllers
 
             return Ok();
         }
+        [HttpGet("SSP")]
+        public IActionResult SearchAndSort([FromQuery]string searchString, [FromQuery] string sortBy, [FromQuery] int page, [FromQuery] int regUser = 3)
+        {
+            var User = from u in _ctx.RegUsers
+                      select u;
+
+            if (searchString != null)
+            {
+                User = User.Where(u => u.RegUserName.Contains(searchString)
+                                        || u.RegUserKeyword.Contains(searchString));
+            }
+
+            if (sortBy == "Des")
+            {
+                User = User.OrderByDescending(u => u.RegUserName);
+            }
+            else if (sortBy == "Asc")
+            {
+                User = User.OrderBy(u => u.RegUserName);
+            }
+
+            if (page > 0)
+            {
+                User = User.Skip((page - 1) * regUser).Take(regUser);
+            }
+
+            return Ok(User);
+        }
     }
 }
