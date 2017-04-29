@@ -5,58 +5,42 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
 namespace HRApi.Controllers
 {
     [Route("[controller]")]
+    [Authorize]
     public class UserController : Controller
     {
         private HRContext _ctx;
-        private UserManager<IdentityUser> _userManager;
+        private UserManager<RegUser> _userManager;
 
-        public UserController(HRContext ctx, UserManager<IdentityUser> UserManager)
+        public UserController(HRContext ctx, UserManager<RegUser> UserManager)
         {
             _ctx = ctx;
             _userManager = UserManager;
         }
 
-        //  [HttpPost("adduser")]
-        //  public IActionResult AddUser()
-        //  {
-        //      var user = new IdentityUser()
-        //      {
-        //          UserName = "Ultradumb",
-        //          Email = "milos@people.com"
-        //      };
-        //
-        //      var id = _userManager.CreateAsync(user, "sifra").Result;
-        //      return new NoContentResult();
-        //  }
-
-        [Authorize(Roles = "SuperUser,HrManager")]
+        [Authorize(Roles = "SuperUser, HrManager")]
         [HttpGet("GetUser")]
         public IEnumerable<RegUser> GetUser()
         {
             return _ctx.RegUsers.ToList();
         }
 
-
-        [Authorize(Roles = "RegUser,SuperUser,HrManager")]
-        [HttpPost("CreateUser")]
-        public IActionResult CreateUser([FromBody] RegUser regUser)
+        [AllowAnonymous]
+        [HttpPost("Create")]
+        public async Task<IActionResult> CreateUser([FromBody] RegUser User)
         {
-            if (regUser == null)
-            {
-                return BadRequest();
-            }
-            _ctx.Add(regUser);
-            _ctx.SaveChanges();
-
-            return Created("api/usercontroller", regUser);
+            var user = await _userManager.CreateAsync(User, User.PasswordHash);
+            return Ok(user);
         }
 
+       
 
-        [Authorize(Roles = "RegUser,SuperUser,HrManager")]
+
+        [Authorize]
         [HttpPut("EditUser/{UserId}")]
         public IActionResult EditUser([FromBody] RegUser regUser, int UserId)
         {
@@ -71,7 +55,6 @@ namespace HRApi.Controllers
                 return NotFound();
             }
 
-            todo.RegUserName = regUser.RegUserName;
             todo.RegUserLastName = regUser.RegUserLastName;
             todo.RegUserCity = regUser.RegUserCity;
             todo.RegUserCountry = regUser.RegUserCountry;
@@ -79,7 +62,7 @@ namespace HRApi.Controllers
             todo.RegUserPartFull = regUser.RegUserPartFull;
             todo.RegUserKeyword = regUser.RegUserKeyword;
 
-            if (User.Identity.Name == "SuperUser,HrManager")
+            if (User.Identity.Name == "SuperUser")
             {
                 todo.WorkXp = regUser.WorkXp;
             }
@@ -89,8 +72,7 @@ namespace HRApi.Controllers
             return Ok();
         }
 
-
-        [Authorize(Roles = "SuperUser,HrManager")]
+        [Authorize(Roles = "SuperUser, HrManager")]
         [HttpDelete("deleteUser/{UserId}")]
         public IActionResult deleteUser(int UserId)
         {

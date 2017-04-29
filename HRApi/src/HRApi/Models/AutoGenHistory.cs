@@ -14,9 +14,9 @@ namespace HRApi.Models
 
         public ICollection<Job> Jobs { get; set; }
 
-        [ForeignKey("RegUserId")]
-        public RegUser RegUser { get; set; }
-        public int RegUserId { get; set; }
+       // [ForeignKey("Id")]
+       // public RegUser RegUser { get; set; }
+       // public int RegUserId { get; set; }
         [ForeignKey("JobId") ]
         public Job Job { get; set; }
         public int JobId { get; set; }

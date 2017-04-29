@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace HRApi.Models
 {
-    public class HRContext : IdentityDbContext<IdentityUser>
+    public class HRContext : IdentityDbContext<RegUser>
     {
         public HRContext(DbContextOptions options) : base(options)
         {

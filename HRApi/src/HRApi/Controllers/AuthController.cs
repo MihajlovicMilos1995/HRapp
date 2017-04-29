@@ -1,19 +1,17 @@
-﻿using HRApi.ViewModels;
+﻿using HRApi.Models;
+using HRApi.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace HRApi.Controllers
 {
     public class AuthController : Controller
     {
-        private SignInManager<IdentityUser> _signInManager;
+        private SignInManager<RegUser> _signInManager;
 
-        public AuthController(SignInManager<IdentityUser> signInManager)
+        public AuthController(SignInManager<RegUser> signInManager)
         {
             _signInManager = signInManager;
         }
@@ -53,8 +51,8 @@ namespace HRApi.Controllers
                         ("", "Username or password incorrect");
                 }
             }
-
             return View();
         }
+      
     }
 }

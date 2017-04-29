@@ -17,17 +17,63 @@ namespace HRApi
         {
             services.AddMvc();
 
+            services.AddAuthorization(options =>
+            {
+                
+                options.AddPolicy("SuperUser",
+                    authBuilder =>
+                    {
+                        authBuilder.RequireRole("SuperUser");
+                    });
+
+                options.AddPolicy("HrManager",
+                   authBuilder =>
+                   {
+                       authBuilder.RequireRole("HrManager");
+                   });
+
+                options.AddPolicy("RegUser",
+                   authBuilder =>
+                   {
+                       authBuilder.RequireRole("RegUser");
+                   });
+
+                options.AddPolicy("SuperUser, HrManager",
+                   authBuilder =>
+                   {
+                       authBuilder.RequireRole("SuperUser", "HrManager");
+                   });
+
+                options.AddPolicy("SuperUser, HrManager,RegUser",
+                   authBuilder =>
+                   {
+                       authBuilder.RequireRole("RegUser", "SuperUser", "HrManager");
+                   });
+
+                //options.GetPolicy("Admin");
+
+                //options.GetPolicy("SubAdmin");
+
+                //options.GetPolicy("RegUser");
+
+            });
+
             var connectionString =
-               @"Data Source=.\SQLEXPRESS;Initial Catalog=HRInfoDB3;Integrated Security=True;MultipleActiveResultSets=True";
+               @"Data Source=.\SQLEXPRESS;Initial Catalog=HRInfoDB;Integrated Security=True;MultipleActiveResultSets=True";
 
             services.AddDbContext<HRContext>
                 (p => p.UseSqlServer(connectionString));
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<RegUser, IdentityRole>()
         .AddEntityFrameworkStores<HRContext>()
         .AddDefaultTokenProviders();
 
-            services.AddIdentity<IdentityUser, IdentityRole>(config =>
+        //    using (var context = new HRContext())
+        //    {
+        //        context.Database.Migrate();
+        //    }
+
+            services.AddIdentity<RegUser, IdentityRole>(config =>
             {
                 config.User.RequireUniqueEmail = true;
                 config.Password.RequiredLength = 2;
@@ -57,7 +103,7 @@ namespace HRApi
            .AddEntityFrameworkStores<HRContext>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, RoleManager<IdentityRole> roleManager, UserManager<RegUser> userManager)
         {
             loggerFactory.AddConsole();
 
@@ -83,7 +129,7 @@ namespace HRApi
             });
         }
 
-        public async void createRolesandUsers(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        public async void createRolesandUsers(RoleManager<IdentityRole> roleManager, UserManager<RegUser> userManager)
         {
             if (!roleManager.RoleExistsAsync("SuperUser").Result)
             {
@@ -95,7 +141,7 @@ namespace HRApi
 
                 //Here we create a Admin super user who will maintain the website                  
 
-                var user = new IdentityUser();
+                var user = new RegUser();
                 user.UserName = "milos";
                 user.Email = "milos@hrapp.com";
 

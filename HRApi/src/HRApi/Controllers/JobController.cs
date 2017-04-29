@@ -1,14 +1,13 @@
 ﻿using HRApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace HRApi.Controllers
 {
     [Route("[controller]")]
+    [Authorize]
     public class JobController : Controller
     {
         private HRContext _jobctx;
@@ -25,6 +24,7 @@ namespace HRApi.Controllers
             return _jobctx.Jobs.ToList();
         }
 
+        [Authorize("SuperUser, HrManager")]
         [HttpPost("CreateJob")]
         public IActionResult CreateJob([FromBody] Job jobs)
         {
@@ -38,8 +38,8 @@ namespace HRApi.Controllers
 
             return Created("api/usercontroller", jobs);
         }
-                
 
+        [Authorize("SuperUser, HrManager")]
         [HttpPut("EditJob/{JobId}")]
         public IActionResult EditJob([FromBody] Job jobs, int JobId)
         {
@@ -66,6 +66,7 @@ namespace HRApi.Controllers
             return Ok();
         }
 
+        [Authorize("SuperUser, HrManager")]
         [HttpDelete("DeleteJob/{JobId}")]
         public IActionResult DeleteJob(int JobId)
         {
@@ -79,7 +80,5 @@ namespace HRApi.Controllers
 
             return Ok();
         }
-        
-
     }
 }
