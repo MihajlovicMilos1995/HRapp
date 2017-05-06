@@ -5,6 +5,7 @@ namespace HRApi.Models
 {
     public class RegUser : IdentityUser
     {
+        private string regUserName;
         private string regUserLastName;
         private string regUserCity;
         private string regUserCountry;
@@ -107,6 +108,19 @@ namespace HRApi.Models
             }
         }
         public AutoGenHistory WorkHistory { get; set; }
+
+        public string RegUserName
+        {
+            get
+            {
+                return regUserName;
+            }
+
+            set
+            {
+                regUserName = value;
+            }
+        }
     }
 }
 

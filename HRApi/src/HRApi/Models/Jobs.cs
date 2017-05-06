@@ -10,7 +10,7 @@ namespace HRApi.Models
 {
     public class Job
     {
-        private string name;
+        private string jobName;
         private string jobDesc;
         private string jobCity;
         private string jobCountry;
@@ -25,12 +25,12 @@ namespace HRApi.Models
         {
             get
             {
-                return name;
+                return jobName;
             }
 
             set
             {
-                name = value;
+                jobName = value;
             }
         }
 
