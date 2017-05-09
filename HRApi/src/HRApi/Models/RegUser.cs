@@ -5,6 +5,7 @@ namespace HRApi.Models
 {
     public class RegUser : IdentityUser
     {
+        private string regUserName;
         private string regUserLastName;
         private string regUserCity;
         private string regUserCountry;
@@ -15,6 +16,19 @@ namespace HRApi.Models
 
         //[Key]
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
+        public string RegUserName
+        {
+            get
+            {
+                return regUserName;
+            }
+
+            set
+            {
+                regUserName = value;
+            }
+        }
 
         public string RegUserLastName
         {

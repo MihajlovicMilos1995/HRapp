@@ -15,11 +15,13 @@ namespace HRApi.Controllers
     {
         private HRContext _ctx;
         private UserManager<RegUser> _userManager;
+       // private RoleManager<RegUser> _roleManager;
 
         public UserController(HRContext ctx, UserManager<RegUser> UserManager)
         {
             _ctx = ctx;
             _userManager = UserManager;
+            //_roleManager = RoleManager;
         }
 
         [Authorize(Roles = "SuperUser, HrManager")]
@@ -34,15 +36,17 @@ namespace HRApi.Controllers
         public async Task<IActionResult> CreateUser([FromBody] RegUser User)
         {
             var user = await _userManager.CreateAsync(User, User.PasswordHash);
+
+            if (user.Succeeded)
+            {
+                var result1 = await _userManager.AddToRoleAsync(User, "RegUser");
+            }
             return Ok(user);
         }
 
-       
-
-
-        [Authorize]
-        [HttpPut("EditUser/{UserId}")]
-        public IActionResult EditUser([FromBody] RegUser regUser, int UserId)
+        [Authorize(Roles = "SuperUser, HrManager")]
+        [HttpPut("EditUser/{UserName}")]
+        public async Task<IActionResult> EditUser([FromBody] RegUser regUser, [FromQuery] string UserName)
         {
             if (regUser == null)
             {
@@ -62,9 +66,9 @@ namespace HRApi.Controllers
             todo.RegUserPartFull = regUser.RegUserPartFull;
             todo.RegUserKeyword = regUser.RegUserKeyword;
 
-            if (User.Identity.Name == "SuperUser")
+            if (User.IsInRole("SuperUser"))
             {
-                todo.WorkXp = regUser.WorkXp;
+                var result1 = await _userManager.AddToRoleAsync(regUser, "Hrmanager");
             }
 
             _ctx.SaveChanges();

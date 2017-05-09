@@ -10,7 +10,7 @@ namespace HRApi.Models
 {
     public class Job
     {
-        private string name;
+        private string jobname;
         private string jobDesc;
         private string jobCity;
         private string jobCountry;
@@ -18,19 +18,19 @@ namespace HRApi.Models
         private string jobKeyword;
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public int JobId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
         public string JobName
         {
             get
             {
-                return name;
+                return jobname;
             }
 
             set
             {
-                name = value;
+                jobname = value;
             }
         }
 
