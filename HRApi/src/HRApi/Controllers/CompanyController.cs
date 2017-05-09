@@ -1,5 +1,6 @@
 ﻿using HRApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +19,35 @@ namespace HRApi.Controllers
         }
 
 
-        [HttpGet("GetCompany")]
-        public IEnumerable<Company> GetCompany()
-        {
-            return _compctx.Companies.ToList();
+        //[HttpGet("GetCompany")]
+        //public IEnumerable<Company> GetCompany()
+        //{
+        //    return _compctx.Companies.ToList();
+        //}
+
+             [HttpGet("{companyId}")]
+        public IActionResult GetCompany(int companyId, bool includeJob = false)
+       {
+            var company = _compctx.Companies.Include(c => c.Jobs)
+                    .Where(c => c.CompanyId == companyId).FirstOrDefault();
+
+            if (company == null)
+            {
+                return NotFound();
+            }
+
+            if (includeJob)
+            {
+                return Ok(company);
+            }
+            var p = _compctx.Companies.Where(c => c.CompanyId == companyId).FirstOrDefault();
+            if (company == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(p);
+
         }
 
 

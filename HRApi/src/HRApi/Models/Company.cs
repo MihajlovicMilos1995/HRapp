@@ -17,6 +17,8 @@ namespace HRApi.Models
         private string companyEmail;
         private string companyWebSite;
 
+        public ICollection<Job> Jobs { get; set; }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int CompanyId { get; set; }

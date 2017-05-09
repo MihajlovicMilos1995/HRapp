@@ -121,6 +121,19 @@ namespace HRApi.Models
             }
         }
         public AutoGenHistory WorkHistory { get; set; }
+
+        public string RegUserName
+        {
+            get
+            {
+                return regUserName;
+            }
+
+            set
+            {
+                regUserName = value;
+            }
+        }
     }
 }
 
