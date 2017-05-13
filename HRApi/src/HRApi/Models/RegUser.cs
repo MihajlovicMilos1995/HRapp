@@ -1,5 +1,7 @@
 ﻿using HRApi.Enums;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HRApi.Models
 {
@@ -13,6 +15,8 @@ namespace HRApi.Models
         private JobType regUserPartFull;
         private string workXp;
         private string regUserKeyword;
+        [NotMapped]
+        public string Password { get; set; }
 
         //[Key]
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -120,20 +124,8 @@ namespace HRApi.Models
                 regUserKeyword = value;
             }
         }
-        public AutoGenHistory WorkHistory { get; set; }
+        public ICollection<AutoGenHistory> WorkHistory { get; set; }
 
-        public string RegUserName
-        {
-            get
-            {
-                return regUserName;
-            }
-
-            set
-            {
-                regUserName = value;
-            }
-        }
     }
 }
 

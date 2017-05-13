@@ -8,6 +8,10 @@ using HRApi.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Logon.Services;
+using HRApi.Services;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 
 namespace HRApi
 {
@@ -15,11 +19,14 @@ namespace HRApi
     {
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddMvc();
+
+            services.AddTransient<IEmailSender, AuthMessageSender>();
 
             services.AddAuthorization(options =>
             {
-                
+
                 options.AddPolicy("SuperUser",
                     authBuilder =>
                     {
@@ -68,21 +75,36 @@ namespace HRApi
         .AddEntityFrameworkStores<HRContext>()
         .AddDefaultTokenProviders();
 
-        //    using (var context = new HRContext())
-        //    {
-        //        context.Database.Migrate();
-        //    }
+            //    using (var context = new HRContext())
+            //    {
+            //        context.Database.Migrate();
+            //    }
 
             services.AddIdentity<RegUser, IdentityRole>(config =>
             {
                 config.User.RequireUniqueEmail = true;
+
+                // TODO: 2) Confirmed mail
+                //
+                // Another example of what you can do is to require a confirmed email:
+                //
+                //services.Configure<IdentityOptions>(options => {
+                //    options.SignIn.RequireConfirmedEmail = true;
+                //});
+                //
+                // If you do this you won’t have to check the EmailConfirmed property of
+                // IdentityUser.When you try to sign the user in using the SignInManager
+                // it will fail, and the result will contain a property named IsNotAllowed
+                // set to true.
+
+                config.SignIn.RequireConfirmedEmail = true;
                 config.Password.RequiredLength = 2;
                 config.Password.RequireDigit = false;
                 config.Password.RequireNonAlphanumeric = false;
                 config.Password.RequireUppercase = false;
                 config.Password.RequireLowercase = false;
 
-                config.Cookies.ApplicationCookie.LoginPath = "/Auth/Login";
+                config.Cookies.ApplicationCookie.LoginPath = "/Account/Login";
                 config.Cookies.ApplicationCookie.Events = new CookieAuthenticationEvents()
                 {
                     OnRedirectToLogin = async ctx =>
@@ -101,6 +123,7 @@ namespace HRApi
                 };
             })
            .AddEntityFrameworkStores<HRContext>();
+
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, RoleManager<IdentityRole> roleManager, UserManager<RegUser> userManager)
@@ -125,7 +148,7 @@ namespace HRApi
                 config.MapRoute(
                     name: "Default",
                     template: "{controller}/{action}/{id?}",
-                    defaults: new { controller = "Auth", action = "Login" });
+                    defaults: new { controller = "Account", action = "Login" });
             });
         }
 

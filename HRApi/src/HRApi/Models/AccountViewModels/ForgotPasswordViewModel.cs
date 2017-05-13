@@ -4,13 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace HRApi.ViewModels
+namespace Logon.Models.AccountViewModels
 {
-    public class LoginViewModel
+    public class ForgotPasswordViewModel
     {
         [Required]
-        public string UserName { get; set; }
-        [Required]
-        public string Password { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
     }
 }

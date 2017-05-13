@@ -12,11 +12,13 @@
     "Microsoft.AspNetCore.Mvc": "1.1.2",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.1.1",
     "Microsoft.AspNetCore.Mvc.Core": "1.1.2",
-    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0" 
-
+    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
+    "Sendgrid": "9.2.0",
+    "Microsoft.Extensions.Configuration.Json": "1.0.0" 
   },
 
   "tools": {
+    "Microsoft.Extensions.SecretManager.Tools": "1.0.0-preview2-final",
     "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final"
   },
 
@@ -49,5 +51,6 @@
 
   "scripts": {
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
-  }
+  },
+  "userSecretsId": "aspnet-HRApi-20170511065628"
 }

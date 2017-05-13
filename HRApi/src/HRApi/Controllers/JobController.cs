@@ -108,8 +108,5 @@ namespace HRApi.Controllers
 
             return Ok(job);
         }
-
-       
-
     }
 }

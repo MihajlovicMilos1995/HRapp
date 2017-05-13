@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
@@ -15,12 +14,13 @@ namespace HRApi.Controllers
     {
         private HRContext _ctx;
         private UserManager<RegUser> _userManager;
-       // private RoleManager<RegUser> _roleManager;
+        // private RoleManager<RegUser> _roleManager;
 
         public UserController(HRContext ctx, UserManager<RegUser> UserManager)
         {
             _ctx = ctx;
             _userManager = UserManager;
+
             //_roleManager = RoleManager;
         }
 
@@ -31,56 +31,41 @@ namespace HRApi.Controllers
             return _ctx.RegUsers.ToList();
         }
 
-        [AllowAnonymous]
-        [HttpPost("Create")]
-        public async Task<IActionResult> CreateUser([FromBody] RegUser User)
-        {
-            var user = await _userManager.CreateAsync(User, User.PasswordHash);
-
-            if (user.Succeeded)
-            {
-                var result1 = await _userManager.AddToRoleAsync(User, "RegUser");
-            }
-            return Ok(user);
-        }
-
-        [Authorize(Roles = "SuperUser, HrManager")]
-        [HttpPut("EditUser/{UserName}")]
-        public async Task<IActionResult> EditUser([FromBody] RegUser regUser, [FromQuery] string UserName)
+        [Authorize(Roles = "SuperUser, HrManager,RegUser")]
+        [HttpPut("EditUser/{userName}")]
+        public IActionResult EditUser([FromBody] RegUser regUser, string userName)
         {
             if (regUser == null)
             {
                 return BadRequest();
             }
 
-            var todo = _ctx.RegUsers.Find(regUser);
+            var todo = _ctx.RegUsers.FirstOrDefault(u => u.UserName == userName);
             if (todo == null)
             {
                 return NotFound();
             }
-
-            todo.RegUserLastName = regUser.RegUserLastName;
-            todo.RegUserCity = regUser.RegUserCity;
-            todo.RegUserCountry = regUser.RegUserCountry;
-            todo.LocationChange = regUser.LocationChange;
-            todo.RegUserPartFull = regUser.RegUserPartFull;
-            todo.RegUserKeyword = regUser.RegUserKeyword;
-
-            if (User.IsInRole("SuperUser"))
+            if (User.Identity.IsAuthenticated)
             {
-                var result1 = await _userManager.AddToRoleAsync(regUser, "Hrmanager");
+                todo.UserName = regUser.UserName;
+                todo.RegUserName = regUser.RegUserName;
+                todo.RegUserLastName = regUser.RegUserLastName;
+                todo.RegUserCity = regUser.RegUserCity;
+                todo.RegUserCountry = regUser.RegUserCountry;
+                todo.LocationChange = regUser.LocationChange;
+                todo.RegUserPartFull = regUser.RegUserPartFull;
+                todo.RegUserKeyword = regUser.RegUserKeyword;
             }
-
             _ctx.SaveChanges();
 
-            return Ok();
+            return Ok("Edited");
         }
 
         [Authorize(Roles = "SuperUser, HrManager")]
-        [HttpDelete("deleteUser/{UserId}")]
-        public IActionResult deleteUser(int UserId)
+        [HttpDelete("deleteUser/{userName}")]
+        public IActionResult deleteUser(string userName)
         {
-            var todo = _ctx.RegUsers.Find(UserId);
+            var todo = _ctx.RegUsers.FirstOrDefault(u => u.UserName == userName);
             if (todo == null)
             {
                 return NotFound();
@@ -88,13 +73,14 @@ namespace HRApi.Controllers
             _ctx.RegUsers.Remove(todo);
             _ctx.SaveChanges();
 
-            return Ok();
+            return Ok("Deleted");
         }
+
         [HttpGet("SSP")]
         public IActionResult SearchAndSort([FromQuery]string searchString, [FromQuery] string sortBy, [FromQuery] int page, [FromQuery] int regUser = 3)
         {
             var User = from u in _ctx.RegUsers
-                      select u;
+                       select u;
 
             if (searchString != null)
             {
