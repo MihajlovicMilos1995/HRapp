@@ -26,6 +26,7 @@ namespace Logon.Services
         //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
 
         public AuthMessageSenderOptions Options { get; } //set only via Secret Manager
+
         public Task SendEmailAsync(string email, string subject, string message)
         {
             // Plug in your email service here to send an email.

@@ -31,6 +31,12 @@ namespace HRApi.Controllers
             return _ctx.RegUsers.ToList();
         }
 
+        [HttpGet("ListUserByType")]
+        public void ListUserByType(RegUser user)
+        {
+
+        }
+
         [Authorize(Roles = "SuperUser, HrManager,RegUser")]
         [HttpPut("EditUser/{userName}")]
         public IActionResult EditUser([FromBody] RegUser regUser, string userName)
