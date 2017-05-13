@@ -31,10 +31,15 @@ namespace HRApi.Controllers
             return _ctx.RegUsers.ToList();
         }
 
-        [HttpGet("ListUserByType")]
-        public void ListUserByType(RegUser user)
+        [HttpGet("ListUserByRole")]
+        public List<RegUser> ListUserByRole([FromQuerry] string role)
         {
+            var users = _ctx.Users.Where
+                (x => x.Roles.Select
+                (y => y.RoleId)
+                .Contains(role)).ToList();
 
+            return users;
         }
 
         [Authorize(Roles = "SuperUser, HrManager,RegUser")]
