@@ -1,17 +1,16 @@
-﻿using System.Threading.Tasks;
+﻿using HRApi.Models;
+using Logon.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
-using HRApi.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
-using Logon.Services;
-using HRApi.Services;
-using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HRApi
 {
@@ -19,8 +18,14 @@ namespace HRApi
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                options.SslPort = 44321;
+                //pitaj mentore
+                //options.Filters.Add(new RequestHttpsAttribute());
+            });
 
             services.AddTransient<IEmailSender, AuthMessageSender>();
 
@@ -64,9 +69,12 @@ namespace HRApi
                 //options.GetPolicy("RegUser");
 
             });
+            //smart db
+            // var connectionString =
+            //    @"Data Source=.\SQLEXPRESS;Initial Catalog=HRInfoDB;Integrated Security=True;MultipleActiveResultSets=True";
 
             var connectionString =
-               @"Data Source=.\SQLEXPRESS;Initial Catalog=HRInfoDB;Integrated Security=True;MultipleActiveResultSets=True";
+                @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=HrInfoDB;Integrated Security = True;MultipleActiveResultSets=true";
 
             services.AddDbContext<HRContext>
                 (p => p.UseSqlServer(connectionString));
@@ -128,15 +136,22 @@ namespace HRApi
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, RoleManager<IdentityRole> roleManager, UserManager<RegUser> userManager)
         {
+            var builder = new ConfigurationBuilder()
+                    .SetBasePath(env.ContentRootPath)
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+
+
             loggerFactory.AddConsole();
 
             app.UseIdentity();
 
-            createRolesandUsers(roleManager, userManager);
+            CreateRolesandUsers(roleManager, userManager);
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                //builder.AddUserSecrets<Startup>();
             }
             else
             {
@@ -152,21 +167,25 @@ namespace HRApi
             });
         }
 
-        public async void createRolesandUsers(RoleManager<IdentityRole> roleManager, UserManager<RegUser> userManager)
+        public async void CreateRolesandUsers(RoleManager<IdentityRole> roleManager, UserManager<RegUser> userManager)
         {
             if (!roleManager.RoleExistsAsync("SuperUser").Result)
             {
 
                 // first we create Admin rool   
-                var role = new IdentityRole();
-                role.Name = "SuperUser";
+                var role = new IdentityRole()
+                {
+                    Name = "SuperUser"
+                };
                 await roleManager.CreateAsync(role);
 
                 //Here we create a Admin super user who will maintain the website                  
 
-                var user = new RegUser();
-                user.UserName = "milos";
-                user.Email = "milos@hrapp.com";
+                var user = new RegUser()
+                {
+                    UserName = "milos",
+                    Email = "milos@hrapp.com"
+                };
 
                 string userPWD = "sifra";
 
@@ -183,8 +202,10 @@ namespace HRApi
             // creating Creating Manager role    
             if (res == false)
             {
-                var role = new IdentityRole();
-                role.Name = "HrManager";
+                var role = new IdentityRole()
+                {
+                    Name = "HrManager"
+                };
                 await roleManager.CreateAsync(role);
             }
 
@@ -192,8 +213,10 @@ namespace HRApi
             // creating Creating Employee role    
             if (res == false)
             {
-                var role = new IdentityRole();
-                role.Name = "RegUser";
+                var role = new IdentityRole()
+                {
+                    Name = "RegUser"
+                };
                 await roleManager.CreateAsync(role);
             }
         }
