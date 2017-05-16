@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
 namespace HRApi.Controllers
 {
@@ -25,14 +26,13 @@ namespace HRApi.Controllers
 
         [Authorize(Roles = "SuperUser, HrManager")]
         [HttpGet("GetUser")]
-        public List<RegUser> GetUser()
+        public IEnumerable<RegUser> GetUser()
         {
             return _ctx.RegUsers.ToList();
         }
 
         [HttpGet("ListUserByRole")]
-        [Authorize(Roles = ("SuperUser,HrManager"))]
-        public List<RegUser> ListUserByRole([FromQuery] string role)
+        public List<RegUser> ListUserByRole([FromQuerry] string role)
         {
             var users = _ctx.Users.Where
                 (x => x.Roles.Select
@@ -42,32 +42,7 @@ namespace HRApi.Controllers
             return users;
         }
 
-        [HttpGet("GetUserByKeyword")]
-        [Authorize(Roles = "SuperUser,HrManager")]
-        public List<RegUser> GetUserByKeyword([FromQuery]string keyword)
-        {
-            var user = _ctx.RegUsers.Where
-                (u => u.RegUserKeyword.
-                Contains(keyword)).ToList();
-
-            return user;
-        }
-
-        [HttpGet("GetUsersInCompanyArea/{companyName}")]
-        [Authorize(Roles = ("SuperUser,HrManager"))]
-        public List<RegUser> GetUsersInCompanyArea([FromQuery] string companyName)
-        {
-            var comp = _ctx.Companies.Find(companyName);
-
-            string companyArea = comp.CompanyCity;
-
-            var user = _ctx.RegUsers.Where(
-                u => u.RegUserCity.Contains(companyArea)).ToList();
-
-            return user;
-        }
-
-        [Authorize]
+        [Authorize(Roles = "SuperUser, HrManager,RegUser")]
         [HttpPut("EditUser/{userName}")]
         public IActionResult EditUser([FromBody] RegUser regUser, string userName)
         {
@@ -86,29 +61,20 @@ namespace HRApi.Controllers
                 todo.UserName = regUser.UserName;
                 todo.RegUserName = regUser.RegUserName;
                 todo.RegUserLastName = regUser.RegUserLastName;
-                todo.RegUserSex = regUser.RegUserSex;
-                todo.RegUserDoB = regUser.RegUserDoB;
                 todo.RegUserCity = regUser.RegUserCity;
                 todo.RegUserCountry = regUser.RegUserCountry;
                 todo.LocationChange = regUser.LocationChange;
                 todo.RegUserPartFull = regUser.RegUserPartFull;
                 todo.RegUserKeyword = regUser.RegUserKeyword;
             }
-
-            if (User.IsInRole("SuperUser")
-                && User.IsInRole("HrManager"))
-            {
-                todo.RegUserAdditionalInfo = regUser.RegUserAdditionalInfo;
-            }
-
             _ctx.SaveChanges();
 
             return Ok("Edited");
         }
 
         [Authorize(Roles = "SuperUser, HrManager")]
-        [HttpDelete("DeleteUser/{userName}")]
-        public IActionResult DeleteUser(string userName)
+        [HttpDelete("deleteUser/{userName}")]
+        public IActionResult deleteUser(string userName)
         {
             var todo = _ctx.RegUsers.FirstOrDefault(u => u.UserName == userName);
             if (todo == null)

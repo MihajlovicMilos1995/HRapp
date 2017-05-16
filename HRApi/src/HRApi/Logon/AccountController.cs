@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Logon.Models.AccountViewModels;
 using HRApi.Models;
+using HRApi;
 using Logon.Services;
 
 namespace Logon.Controllers

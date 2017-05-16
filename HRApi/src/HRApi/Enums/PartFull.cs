@@ -10,10 +10,4 @@ namespace HRApi.Enums
         FullTime,
         PartTime
     }
-    public enum Sex
-    {
-        Male,
-        Female,
-        Other
-    }
 }
