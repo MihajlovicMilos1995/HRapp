@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
+using HRApi.Enums;
 
 namespace HRApi.Controllers
 {
@@ -95,6 +96,7 @@ namespace HRApi.Controllers
                 todo.LocationChange = regUser.LocationChange;
                 todo.RegUserPartFull = regUser.RegUserPartFull;
                 todo.RegUserKeyword = regUser.RegUserKeyword;
+                todo.StatusOfUser = regUser.StatusOfUser;
             }
 
             if (User.IsInRole("SuperUser")
@@ -150,6 +152,18 @@ namespace HRApi.Controllers
             }
 
             return Ok(User);
+        }
+
+        [HttpGet("status/{status}")]
+        public List<RegUser> GetJobsByStatus(Status status)
+        {
+
+            var users = _ctx.Users
+                   .Where(c => c.StatusOfUser == status);
+
+                return users.ToList();
+
+
         }
     }
 }

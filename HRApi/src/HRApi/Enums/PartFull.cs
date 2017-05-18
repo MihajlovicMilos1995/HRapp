@@ -17,4 +17,11 @@ namespace HRApi.Enums
         Female,
         Other
     }
+
+    public enum Status
+    {
+        available,
+        assigned,
+        frozen
+    }
 }
