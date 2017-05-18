@@ -1,6 +1,5 @@
 ﻿using HRApi.Enums;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,15 +9,12 @@ namespace HRApi.Models
     {
         private string regUserName;
         private string regUserLastName;
-        private Sex regUserSex;
-        private DateTime regUserDoB;
         private string regUserCity;
         private string regUserCountry;
         private bool locationChange;
         private JobType regUserPartFull;
         private string workXp;
         private string regUserKeyword;
-        private string regUserAdditionalInfo;
         [NotMapped]
         public string Password { get; set; }
 
@@ -130,12 +126,6 @@ namespace HRApi.Models
         }
         public ICollection<AutoGenHistory> WorkHistory { get; set; }
 
-        public Sex RegUserSex { get => regUserSex; set => regUserSex = value; }
-
-        public DateTime RegUserDoB { get => regUserDoB; set => regUserDoB = value; }
-
-
-        public string RegUserAdditionalInfo { get => regUserAdditionalInfo; set => regUserAdditionalInfo = value; }
     }
 }
 

@@ -98,6 +98,5 @@ namespace HRApi.Models
                 jobKeyword = value;
             }
         }
-        public virtual IList<RegUser> AppliedForJob { get; set; }
     }
 }

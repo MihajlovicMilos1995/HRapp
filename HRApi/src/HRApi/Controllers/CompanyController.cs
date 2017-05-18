@@ -1,5 +1,4 @@
 ﻿using HRApi.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,10 +24,10 @@ namespace HRApi.Controllers
         //{
         //    return _compctx.Companies.ToList();
         //}
-        [Authorize("SuperUser,HrManager")]
-        [HttpGet("{companyId}")]
+
+             [HttpGet("{companyId}")]
         public IActionResult GetCompany(int companyId, bool includeJob = false)
-        {
+       {
             var company = _compctx.Companies.Include(c => c.Jobs)
                     .Where(c => c.CompanyId == companyId).FirstOrDefault();
 
@@ -56,7 +55,7 @@ namespace HRApi.Controllers
         public IActionResult SearchAndSort([FromQuery]string searchString, [FromQuery] string sortBy, [FromQuery] int page, [FromQuery] int companiesPerPage = 3)
         {
             var company = from c in _compctx.Companies
-                          select c;
+                      select c;
 
             if (searchString != null)
             {
