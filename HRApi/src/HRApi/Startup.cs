@@ -66,7 +66,8 @@ namespace HRApi
             });
 
             var connectionString =
-               @"Data Source=.\SQLEXPRESS;Initial Catalog=HRInfoDB;Integrated Security=True;MultipleActiveResultSets=True";
+               //@"Data Source=.\SQLEXPRESS;Initial Catalog=HRInfoDB;Integrated Security=True;MultipleActiveResultSets=True";
+                 @"Data Source = (localdb)\MSSQLLocalDB;Initial Catalog =HrInfoDB;Integrated Security=True;MultipleActiveResultSets=True;";
 
             services.AddDbContext<HRContext>
                 (p => p.UseSqlServer(connectionString));
@@ -167,6 +168,8 @@ namespace HRApi
                 var user = new RegUser();
                 user.UserName = "milos";
                 user.Email = "milos@hrapp.com";
+                user.EmailConfirmed = true;
+                user.TwoFactorEnabled = false;
 
                 string userPWD = "sifra";
 
