@@ -15,10 +15,10 @@ namespace HRApi.Controllers
     {
         private HRContext _jobctx;
 
-        public JobController(HRContext job, IHttpContextAccessor httpContextAccessor)
+        public JobController(HRContext job /*, IHttpContextAccessor httpContextAccessor*/)
         {
             _jobctx = job;
-            var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //var userId = httpContextAccessor.HttpContext. .FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
         [AllowAnonymous]

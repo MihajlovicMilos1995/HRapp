@@ -110,7 +110,7 @@ namespace HRApi.Controllers
 
         [Authorize(Roles = "SuperUser, HrManager")]
         [HttpDelete("DeleteUser/{userName}")]
-        public IActionResult DeleteUser([FromQuery]string userName)
+        public IActionResult DeleteUser(string userName)
         {
             var todo = _ctx.RegUsers.FirstOrDefault(u => u.UserName == userName);
             if (todo == null)

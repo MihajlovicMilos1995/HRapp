@@ -17,6 +17,9 @@
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
+  <PropertyGroup>
+  <UserSecretsId>152227768162-tb269i7kukg7d2aa3nqn2a3k56fi4qle.apps.googleusercontent.com</UserSecretsId>
+</PropertyGroup>
   <ItemGroup>
     <DnxInvisibleContent Include="bower.json" />
     <DnxInvisibleContent Include=".bowerrc" />

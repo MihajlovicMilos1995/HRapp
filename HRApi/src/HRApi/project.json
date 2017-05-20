@@ -14,8 +14,12 @@
     "Microsoft.AspNetCore.Mvc.Core": "1.1.2",
     "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
     "Sendgrid": "9.2.0",
-    "Microsoft.Extensions.Configuration.Json": "1.0.0",
-    "MailKit": "1.16.1" 
+    "Microsoft.Extensions.Configuration.Json": "1.1.2",
+    "MailKit": "1.16.1",
+    "Microsoft.Extensions.Configuration.UserSecrets": "1.1.2",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.2",
+    "Microsoft.AspNetCore.Authentication.Google": "1.1.2",
+    "Microsoft.AspNetCore.Authentication.Facebook": "1.1.2"
   },
 
   "tools": {
@@ -43,15 +47,15 @@
     }
   },
 
-  "publishOptions": {
-    "include": [
-      "wwwroot",
-      "web.config"
-    ]
-  },
+    "publishOptions": {
+      "include": [
+        "wwwroot",
+        "web.config"
+      ]
+    },
 
-  "scripts": {
-    "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
-  },
-  "userSecretsId": "aspnet-HRApi-20170511065628"
-}
+    "scripts": {
+      "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
+    },
+    "userSecretsId": "aspnet-HRApi-20170511065628"
+  }

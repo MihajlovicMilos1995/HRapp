@@ -1,6 +1,7 @@
 ﻿using HRApi.Services;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using SendGrid;
@@ -63,10 +64,16 @@ namespace Logon.Services
             
                 using (var client = new SmtpClient())
             {
-                client.LocalDomain = "smtp.gmail.com";
-                await client.ConnectAsync("smtp.relay.uri", 25, SecureSocketOptions.None).ConfigureAwait(false);
-                await client.SendAsync(emailMessage).ConfigureAwait(false);
-                await client.DisconnectAsync(true).ConfigureAwait(false);
+                client.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTlsWhenAvailable);
+                client.AuthenticationMechanisms.Remove("XOAUTH2"); // Must be removed for Gmail SMTP
+                client.Authenticate("mihajlovicmilos16@gmail.com", "scarface995");
+                client.Send(emailMessage);
+                client.Disconnect(true);
+                //client.LocalDomain = "smtp.gmail.com";
+                
+                //await client.ConnectAsync("smtp.relay.uri", 25, SecureSocketOptions.None).ConfigureAwait(false);
+                //await client.SendAsync(emailMessage).ConfigureAwait(false);
+                //await client.DisconnectAsync(true).ConfigureAwait(false);
             };
         }
     }

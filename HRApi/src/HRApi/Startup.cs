@@ -9,18 +9,42 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Logon.Services;
-using HRApi.Services;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HRApi
 {
     public class Startup
     {
+        public IConfigurationRoot Configuration { get; set; }
+        private IConfigurationBuilder builder;
+
+        public Startup(IHostingEnvironment env)
+        {
+            builder = new ConfigurationBuilder()
+         .SetBasePath(env.ContentRootPath)
+         .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+         .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+         //.AddJsonFile("secrets.json", optional: true, reloadOnChange: true);
+
+            if (env.IsDevelopment())
+            {
+                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
+                builder.AddUserSecrets("152227768162-tb269i7kukg7d2aa3nqn2a3k56fi4qle.apps.googleusercontent.com");
+            }
+
+            builder.AddEnvironmentVariables();
+            Configuration = builder.Build();
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                options.SslPort = 44321;
+                options.Filters.Add(new RequireHttpsAttribute());
+            });
 
             services.AddTransient<IEmailSender, AuthMessageSender>();
 
@@ -65,12 +89,14 @@ namespace HRApi
 
             });
 
-            var connectionString =
-               //@"Data Source=.\SQLEXPRESS;Initial Catalog=HRInfoDB;Integrated Security=True;MultipleActiveResultSets=True";
-                 @"Data Source = (localdb)\MSSQLLocalDB;Initial Catalog =HrInfoDB;Integrated Security=True;MultipleActiveResultSets=True;";
+            //var connectionString =
+            //     //@"Data Source=.\SQLEXPRESS;Initial Catalog=HRInfoDB;Integrated Security=True;MultipleActiveResultSets=True";
+            //     @"Data Source = (localdb)\MSSQLLocalDB;Initial Catalog =HrInfoDB;Integrated Security=True;MultipleActiveResultSets=True;";
 
             services.AddDbContext<HRContext>
-                (p => p.UseSqlServer(connectionString));
+                (/*p => p.UseSqlServer(connectionString)*/
+            options =>
+            options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
 
             services.AddIdentity<RegUser, IdentityRole>()
         .AddEntityFrameworkStores<HRContext>()
@@ -131,10 +157,6 @@ namespace HRApi
         {
             loggerFactory.AddConsole();
 
-            app.UseIdentity();
-
-            createRolesandUsers(roleManager, userManager);
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -143,6 +165,23 @@ namespace HRApi
             {
                 app.UseExceptionHandler();
             }
+
+            app.UseIdentity();
+
+            app.UseGoogleAuthentication(new GoogleOptions()
+            {
+                ClientId = "152227768162-tb269i7kukg7d2aa3nqn2a3k56fi4qle.apps.googleusercontent.com",
+                ClientSecret = "XgD_M898RYv8ZYnRQ4IxnBel"
+            });
+
+            //app.UseFacebookAuthentication(new FacebookOptions()
+            //{
+            //    AppId = Configuration["Authentication:Facebook:AppId"],
+            //    AppSecret = Configuration["Authentication:Facebook:AppSecret"]
+            //});
+
+            createRolesandUsers(roleManager, userManager);
+         
 
             app.UseMvc(config =>
             {

@@ -233,7 +233,7 @@ namespace Logon.Controllers
         //PromoteToHR
         [Authorize(Roles = "SuperUser,HrManager")]
         [HttpPut("PromoteToHr/{userName}")]
-        public async Task<IActionResult> PromoteToHr([FromBody] RegUser regUser, string userName)
+        public async Task<IActionResult> PromoteToHr(RegUser regUser, string userName)
         {
             if (regUser == null)
             {
@@ -256,7 +256,7 @@ namespace Logon.Controllers
         //Promote To SuperUser
         [Authorize(Roles = "SuperUser")]
         [HttpPut("PromoteToSuper/{userName}")]
-        public async Task<IActionResult> PromoteToSuper([FromBody] RegUser regUser, string userName)
+        public async Task<IActionResult> PromoteToSuper(RegUser regUser, string userName)
         {
             if (regUser == null)
             {
