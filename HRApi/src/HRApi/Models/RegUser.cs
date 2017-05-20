@@ -17,6 +17,7 @@ namespace HRApi.Models
         private bool locationChange;
         private JobType regUserPartFull;
         private string workXp;
+        public Status StatusOfUser;
         private string regUserKeyword;
         private string regUserAdditionalInfo;
         [NotMapped]
@@ -37,7 +38,7 @@ namespace HRApi.Models
                 regUserName = value;
             }
         }
-
+               
         public string RegUserLastName
         {
             get
