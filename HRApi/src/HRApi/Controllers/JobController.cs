@@ -30,7 +30,7 @@ namespace HRApi.Controllers
 
         [HttpGet("GetJobsByCity")]
         [AllowAnonymous]
-        public List<Job> GetJobsByCity([FromQuery]string city)
+        public List<Job> GetJobsByCity(string city)
         {
             if (city != null)
             {
@@ -119,15 +119,15 @@ namespace HRApi.Controllers
         }
 
         [Authorize(Roles = "SuperUser,HrManager")]
-        [HttpPut("EditJob/{JobId}")]
-        public IActionResult EditJob([FromBody] Job jobs, int JobId)
+        [HttpPut("EditJob/{jobName}")]
+        public IActionResult EditJob([FromBody] Job jobs, string jobName)
         {
-            if (jobs == null)
+            if (jobName == null)
             {
                 return BadRequest();
             }
 
-            var todo = _jobctx.Jobs.Find(jobs);
+            var todo = _jobctx.Jobs.Find(jobName);
             if (todo == null)
             {
                 return NotFound();

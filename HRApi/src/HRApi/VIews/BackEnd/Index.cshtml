@@ -1,0 +1,72 @@
+@model IEnumerable<HRApi.Models.Company>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/VIews/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyDesc)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyCity)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyCountry)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyPhone)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyEmail)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompanyWebSite)
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyDesc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyCity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyCountry)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyPhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyWebSite)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.CompanyId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.CompanyId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.CompanyId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

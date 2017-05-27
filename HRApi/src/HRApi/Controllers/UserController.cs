@@ -98,16 +98,22 @@ namespace HRApi.Controllers
                 todo.RegUserKeyword = regUser.RegUserKeyword;
                 todo.StatusOfUser = regUser.StatusOfUser;
             }
-
-            if (User.IsInRole("SuperUser")
-                && User.IsInRole("HrManager"))
-            {
-                todo.RegUserAdditionalInfo = regUser.RegUserAdditionalInfo;
-            }
-
             _ctx.SaveChanges();
 
             return Ok("Edited");
+        }
+
+        [Authorize(Roles="SuperUser,HrManager")]
+        [HttpPut("UserAdditionalInfo/{userName}")]
+        public IActionResult UserAdditionalInfo (RegUser regUser ,string userName,string additionalInfo)
+        {
+            var user = _ctx.RegUsers.FirstOrDefault(u => u.RegUserName == userName);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            user.RegUserAdditionalInfo = regUser.RegUserAdditionalInfo;
+            return Ok("Aditional information added.");
         }
 
         [Authorize(Roles = "SuperUser, HrManager")]
