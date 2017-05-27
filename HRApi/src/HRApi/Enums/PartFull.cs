@@ -18,10 +18,19 @@ namespace HRApi.Enums
         Other
     }
 
-    public enum Status
+    public enum UserStatus
     {
         available,
         assigned,
         frozen
     }
+
+    //public enum JobStatus
+    //{
+    //    expired,
+    //    accepted
+        
+    //}
+
+    
 }

@@ -161,7 +161,7 @@ namespace HRApi.Controllers
         }
 
         [HttpGet("status/{status}")]
-        public List<RegUser> GetJobsByStatus(Status status)
+        public List<RegUser> GetJobsByStatus(UserStatus status)
         {
 
             var users = _ctx.Users
