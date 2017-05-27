@@ -137,6 +137,9 @@ namespace HRApi.Controllers
             todo.JobDesc = jobs.JobDesc;
             todo.JobCity = jobs.JobCity;
             todo.JobCountry = jobs.JobCountry;
+            todo.JobCategories = jobs.JobCategories;
+            todo.JobSalary = jobs.JobSalary;
+            todo.JobReqXp = jobs.JobReqXp;
             todo.JobPartFull = jobs.JobPartFull;
             todo.JobKeyword = jobs.JobKeyword;
 
