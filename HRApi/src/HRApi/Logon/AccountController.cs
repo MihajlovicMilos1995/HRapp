@@ -149,12 +149,11 @@ namespace Logon.Controllers
         public IActionResult ExternalLogin(string provider, string returnUrl = null)
         {
             // Request a redirect to the external login provider.
-            var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
+            var redirectUrl = Url.Action("ExternalLoginConfirmation", "Account", new { ReturnUrl = returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return Challenge(properties, provider);
         }
 
-        //
         // GET: /Account/ExternalLoginCallback
         [HttpGet]
         [AllowAnonymous]
@@ -201,7 +200,7 @@ namespace Logon.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl = null)
+        public async Task<IActionResult>ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl = null)
         {
             if (ModelState.IsValid)
             {
@@ -213,22 +212,25 @@ namespace Logon.Controllers
                 }
                 var user = new RegUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user);
+                var result1 = await _userManager.AddToRoleAsync(user ,"RegUser");
                 if (result.Succeeded)
                 {
-                    result = await _userManager.AddLoginAsync(user, info);
-                    if (result.Succeeded)
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        _logger.LogInformation(6, "User created an account using {Name} provider.", info.LoginProvider);
-                        return RedirectToLocal(returnUrl);
-                    }
+                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
+                    // Send an email with this link
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                    await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
+                        $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    _logger.LogInformation(3, "User created a new account with password.");
+                    return RedirectToLocal(returnUrl);
                 }
                 AddErrors(result);
             }
-
             ViewData["ReturnUrl"] = returnUrl;
             return View(model);
         }
+
 
         //PromoteToHR
         [Authorize(Roles = "SuperUser,HrManager")]
