@@ -89,8 +89,7 @@ namespace HRApi
 
             });
 
-            //var connectionString =
-            //     //@"Data Source=.\SQLEXPRESS;Initial Catalog=HRInfoDB;Integrated Security=True;MultipleActiveResultSets=True";
+            //var connectionString =            
             //     @"Data Source = (localdb)\MSSQLLocalDB;Initial Catalog =HrInfoDB;Integrated Security=True;MultipleActiveResultSets=True;";
 
             services.AddDbContext<HRContext>
