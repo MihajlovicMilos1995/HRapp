@@ -14,6 +14,9 @@ namespace HRApi.Models
         private string jobDesc;
         private string jobCity;
         private string jobCountry;
+        private string jobCategories;
+        private string jobSalary;
+        private string jobReqXp;
         private JobType jobPartFull;
         private string jobKeyword;
 
@@ -96,6 +99,46 @@ namespace HRApi.Models
             set
             {
                 jobKeyword = value;
+            }
+        }
+
+        public string JobCategories
+        {
+            get
+            {
+                return jobCategories;
+            }
+
+            set
+            {
+                jobCategories = value;
+            }
+        }
+
+        public string JobReqXp
+        {
+            get
+            {
+                return jobReqXp;
+            }
+
+            set
+            {
+                jobReqXp = value;
+            }
+        }
+
+        [RegularExpression("^[0-9]*$", ErrorMessage = "Salary must be numeric")]
+        public string JobSalary
+        {
+            get
+            {
+                return JobSalary;
+            }
+
+            set
+            {
+                JobSalary = value;
             }
         }
     }

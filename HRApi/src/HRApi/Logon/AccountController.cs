@@ -213,14 +213,24 @@ namespace Logon.Controllers
                 }
                 var user = new RegUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user);
-                if (result.Succeeded)
+                var result1 = await _userManager.AddToRoleAsync(user, "RegUser");
+                if (result.Succeeded && result1.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var callbackUrl = Url.Action("ConfirmEmail", "Account",
+                            new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                        await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
+                            $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         _logger.LogInformation(6, "User created an account using {Name} provider.", info.LoginProvider);
+                        //_logger.LogInformation(3, "User created a new account with password.");
                         return RedirectToLocal(returnUrl);
+
+                        // await _signInManager.SignInAsync(user, isPersistent: false);
+                        // return RedirectToLocal(returnUrl);
                     }
                 }
                 AddErrors(result);
