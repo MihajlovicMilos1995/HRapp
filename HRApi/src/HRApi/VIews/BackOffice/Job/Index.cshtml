@@ -1,0 +1,84 @@
+@model IEnumerable<HRApi.Models.Job>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/VIews/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.JobName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.JobDesc)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.JobCity)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.JobCountry)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.JobPartFull)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.JobKeyword)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.JobCategories)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.JobReqXp)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.JobSalary)
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobDesc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobCity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobCountry)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobPartFull)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobKeyword)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobCategories)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobReqXp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobSalary)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.JobId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.JobId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.JobId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

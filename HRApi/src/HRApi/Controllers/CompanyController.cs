@@ -52,7 +52,6 @@ namespace HRApi.Controllers
 
         }
 
-
         [HttpGet("SSP")]
         public IActionResult SearchAndSort([FromQuery]string searchString, [FromQuery] string sortBy, [FromQuery] int page, [FromQuery] int companiesPerPage = 3)
         {

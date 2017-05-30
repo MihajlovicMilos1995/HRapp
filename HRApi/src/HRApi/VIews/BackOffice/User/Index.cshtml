@@ -1,0 +1,186 @@
+@model IEnumerable<HRApi.Models.RegUser>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/VIews/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.RegUserName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.statusOfUser)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RegUserLastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RegUserCity)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RegUserCountry)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LocationChange)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RegUserPartFull)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.WorkXp)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RegUserKeyword)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RegUserSex)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RegUserDoB)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RegUserAdditionalInfo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UserName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NormalizedUserName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NormalizedEmail)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EmailConfirmed)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PasswordHash)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SecurityStamp)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ConcurrencyStamp)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PhoneNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TwoFactorEnabled)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LockoutEnd)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LockoutEnabled)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AccessFailedCount)
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegUserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.statusOfUser)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegUserLastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegUserCity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegUserCountry)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LocationChange)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegUserPartFull)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WorkXp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegUserKeyword)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegUserSex)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegUserDoB)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegUserAdditionalInfo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NormalizedUserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NormalizedEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmailConfirmed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PasswordHash)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SecurityStamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ConcurrencyStamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumberConfirmed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TwoFactorEnabled)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LockoutEnd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LockoutEnabled)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AccessFailedCount)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

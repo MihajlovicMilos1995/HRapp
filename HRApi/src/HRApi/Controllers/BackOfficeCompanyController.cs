@@ -8,11 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using HRApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Routing;
+using HRApi.Enums;
 
 namespace HRApi.Controllers
 {
     [Authorize(Roles = "SuperUser")]
-    [Route("{controller}")]
+    [Route("{BOC}")]
     public class BackEndController : Controller
     {
         private readonly HRContext _context;
@@ -21,20 +22,14 @@ namespace HRApi.Controllers
             _context = context;    
         }
 
-        [HttpGet("GetUser")]
-        public IActionResult GetUser()
+        [HttpGet("status/{status}")]
+        public List<RegUser> GetJobsByStatus(UserStatus status)
         {
-            return View(_context.RegUsers.ToList());
-        }
 
-        [HttpGet("GetUserByKeyword")]
-        public List<RegUser> GetUserByKeyword(string keyword)
-        {
-            var user = _context.RegUsers.Where
-                (u => u.RegUserKeyword
-                .Contains(keyword)).ToList();
+            var users = _context.Users
+                   .Where(c => c.StatusOfUser == status);
 
-            return user;
+            return users.ToList();
         }
 
         // GET: BackEnd
@@ -84,6 +79,7 @@ namespace HRApi.Controllers
         }
 
         // GET: BackEnd/Edit/5
+        [HttpGet("EditCompany")]
         public IActionResult Edit(string companyName)
         {
             if (companyName == null)

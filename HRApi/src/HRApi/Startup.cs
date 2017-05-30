@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Logon.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace HRApi
 {
@@ -45,6 +46,8 @@ namespace HRApi
                 options.SslPort = 44321;
                 options.Filters.Add(new RequireHttpsAttribute());
             });
+
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddTransient<IEmailSender, AuthMessageSender>();
 

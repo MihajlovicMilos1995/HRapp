@@ -1,0 +1,179 @@
+@model HRApi.Models.RegUser
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/VIews/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>RegUser</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.RegUserName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RegUserName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.statusOfUser)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.statusOfUser)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RegUserLastName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RegUserLastName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RegUserCity)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RegUserCity)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RegUserCountry)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RegUserCountry)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LocationChange)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LocationChange)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RegUserPartFull)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RegUserPartFull)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.WorkXp)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.WorkXp)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RegUserKeyword)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RegUserKeyword)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RegUserSex)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RegUserSex)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RegUserDoB)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RegUserDoB)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RegUserAdditionalInfo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RegUserAdditionalInfo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.NormalizedUserName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NormalizedUserName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.NormalizedEmail)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NormalizedEmail)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EmailConfirmed)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EmailConfirmed)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PasswordHash)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PasswordHash)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SecurityStamp)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SecurityStamp)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ConcurrencyStamp)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ConcurrencyStamp)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PhoneNumberConfirmed)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TwoFactorEnabled)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TwoFactorEnabled)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LockoutEnd)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LockoutEnd)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LockoutEnabled)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LockoutEnabled)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AccessFailedCount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AccessFailedCount)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </form>
+</div>

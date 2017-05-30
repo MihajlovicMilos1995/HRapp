@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 using HRApi.Enums;
+using AutoMapper;
+using HRApi.Models.UserDTO;
+using System.Collections;
 
 namespace HRApi.Controllers
 {
@@ -15,21 +18,30 @@ namespace HRApi.Controllers
     {
         private HRContext _ctx;
         private UserManager<RegUser> _userManager;
+        private readonly IMapper _mapper;
         // private RoleManager<RegUser> _roleManager;
 
-        public UserController(HRContext ctx, UserManager<RegUser> UserManager)
+        public UserController(HRContext ctx, UserManager<RegUser> UserManager, IMapper mapper)
         {
             _ctx = ctx;
             _userManager = UserManager;
+            _mapper = mapper;
 
             //_roleManager = RoleManager;
         }
 
         [Authorize(Roles = "SuperUser, HrManager")]
         [HttpGet("GetUser")]
-        public List<RegUser> GetUser()
+        public IEnumerable<RegUser> GetUser()
         {
-            return _ctx.RegUsers.ToList();
+            var user = _ctx.RegUsers.ToList();
+
+            IEnumerable model = _mapper.Map<List<RegUser>, List<UserViewModel>>(user);
+
+            Mapper.AssertConfigurationIsValid();
+
+            return model();
+
         }
 
         [Authorize(Roles = "SuperUser,HrManager")]
@@ -107,28 +119,13 @@ namespace HRApi.Controllers
         [HttpPut("UserAdditionalInfo/{userName}")]
         public IActionResult UserAdditionalInfo (RegUser regUser ,string userName,string additionalInfo)
         {
-            var user = _ctx.RegUsers.FirstOrDefault(u => u.RegUserName == userName);
+            var user = _ctx.RegUsers.FirstOrDefault(u => u.UserName == userName);
             if (user == null)
             {
                 return NotFound();
             }
             user.RegUserAdditionalInfo = regUser.RegUserAdditionalInfo;
             return Ok("Aditional information added.");
-        }
-
-        [Authorize(Roles = "SuperUser, HrManager")]
-        [HttpDelete("DeleteUser/{userName}")]
-        public IActionResult DeleteUser(string userName)
-        {
-            var todo = _ctx.RegUsers.FirstOrDefault(u => u.UserName == userName);
-            if (todo == null)
-            {
-                return NotFound();
-            }
-            _ctx.RegUsers.Remove(todo);
-            _ctx.SaveChanges();
-
-            return Ok("Deleted");
         }
 
         [HttpGet("SSP")]
@@ -158,18 +155,6 @@ namespace HRApi.Controllers
             }
 
             return Ok(User);
-        }
-
-        [HttpGet("status/{status}")]
-        public List<RegUser> GetJobsByStatus(UserStatus status)
-        {
-
-            var users = _ctx.Users
-                   .Where(c => c.StatusOfUser == status);
-
-                return users.ToList();
-
-
         }
     }
 }
