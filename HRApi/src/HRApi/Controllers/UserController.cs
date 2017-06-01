@@ -32,15 +32,15 @@ namespace HRApi.Controllers
 
         [Authorize(Roles = "SuperUser, HrManager")]
         [HttpGet("GetUser")]
-        public IEnumerable<RegUser> GetUser()
+        public IEnumerable<UserViewModel> GetUser()
         {
             var user = _ctx.RegUsers.ToList();
 
-            IEnumerable model = _mapper.Map<List<RegUser>, List<UserViewModel>>(user);
+            IEnumerable<UserViewModel> model = _mapper.Map<List<RegUser>, List<UserViewModel>>(user);
 
             Mapper.AssertConfigurationIsValid();
 
-            return model();
+            return model;
 
         }
 

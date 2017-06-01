@@ -138,7 +138,7 @@ namespace Logon.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation(4, "User logged out.");
-            return RedirectToAction("GetJob", "Job");
+            return RedirectToAction("Login", "Account");
         }
 
         //
@@ -211,7 +211,8 @@ namespace Logon.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new RegUser { UserName = model.Email, Email = model.Email };
+                var user = new RegUser { UserName = model.Email, Email = model.Email,
+                    RegUserLastName = model.LastName, RegUserName = model.FirstName };
                 var result = await _userManager.CreateAsync(user);
                 var result1 = await _userManager.AddToRoleAsync(user, "RegUser");
                 if (result.Succeeded && result1.Succeeded)
@@ -516,7 +517,7 @@ namespace Logon.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(AccountController.Login), "Account");
             }
         }
 

@@ -32,6 +32,7 @@
     "AutoMapper.Extensions.Microsoft.DependencyInjection": "2.0.1",
     "AutoMapper": "6.0.2"  },
   "tools": {
+    "Microsoft.Extensions.SecretManager.Tools": "1.0.0-preview2-final",
     "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final",
     "Microsoft.VisualStudio.Web.CodeGeneration.Tools": {
       "version": "1.1.0-preview4-final",

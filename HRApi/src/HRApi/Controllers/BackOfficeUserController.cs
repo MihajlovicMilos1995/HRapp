@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace HRApi.Controllers
 {
     [Authorize("SuperUser")]
-    [Route("BOU")]
+   
     public class BackOfficeUserController : Controller
     {
         private readonly HRContext _context;
@@ -25,7 +25,7 @@ namespace HRApi.Controllers
         public async Task<IActionResult> Index()
         {
             
-            return View(await _context.RegUsers.ToListAsync());
+            return View("~/Views/BackOffice/User/Index.cshtml", await _context.RegUsers.ToListAsync());
         }
 
         // GET: BackOfficeUser/Details/5

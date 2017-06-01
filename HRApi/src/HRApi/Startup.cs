@@ -157,6 +157,7 @@ namespace HRApi
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, RoleManager<IdentityRole> roleManager, UserManager<RegUser> userManager)
         {
+            app.UseStaticFiles();
             loggerFactory.AddConsole();
 
             if (env.IsDevelopment())
@@ -176,11 +177,11 @@ namespace HRApi
                 ClientSecret = "XgD_M898RYv8ZYnRQ4IxnBel"
             });
 
-            //app.UseFacebookAuthentication(new FacebookOptions()
-            //{
-            //    AppId = Configuration["Authentication:Facebook:AppId"],
-            //    AppSecret = Configuration["Authentication:Facebook:AppSecret"]
-            //});
+            app.UseFacebookAuthentication(new FacebookOptions()
+            {
+                AppId = "1905353013066180",
+                AppSecret = "341cda9858d36027e96ba7023252c71f"
+            });
 
             createRolesandUsers(roleManager, userManager);
          
@@ -207,12 +208,12 @@ namespace HRApi
                 //Here we create a Admin super user who will maintain the website                  
 
                 var user = new RegUser();
-                user.UserName = "milos";
-                user.Email = "milos@hrapp.com";
+                user.UserName = "admin";
+                user.Email = "admin@hrapp.com";
                 user.EmailConfirmed = true;
                 user.TwoFactorEnabled = false;
 
-                string userPWD = "sifra";
+                string userPWD = "admin";
 
                 var chkUser = await userManager.CreateAsync(user, userPWD);
 
