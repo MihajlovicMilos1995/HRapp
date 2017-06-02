@@ -1,6 +1,7 @@
 ﻿using HRApi.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace HRApi.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int JobId { get; set; }
 
+        [DisplayName("Name")]
         public string JobName
         {
             get
@@ -37,6 +39,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Description")]
         public string JobDesc
         {
             get
@@ -50,6 +53,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("City")]
         public string JobCity
         {
             get
@@ -63,6 +67,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Country")]
         public string JobCountry
         {
             get
@@ -76,6 +81,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Full/Part time")]
         public JobType JobPartFull
         {
             get
@@ -89,6 +95,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Keyword")]
         public string JobKeyword
         {
             get
@@ -102,6 +109,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Categorie")]
         public string JobCategories
         {
             get
@@ -115,6 +123,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Reqired experience")]
         public string JobReqXp
         {
             get
@@ -128,6 +137,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Salary")]
         [RegularExpression("^[0-9]*$", ErrorMessage = "Salary must be numeric")]
         public string JobSalary
         {

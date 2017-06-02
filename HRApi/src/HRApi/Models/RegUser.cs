@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HRApi.Models
@@ -23,9 +25,11 @@ namespace HRApi.Models
         [NotMapped]
         public string Password { get; set; }
 
-        //[Key]
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+       // [Key]
+       // [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+       // public int Id { get; set; }
 
+        [DisplayName("First Name")]
         public string RegUserName
         {
             get
@@ -38,6 +42,7 @@ namespace HRApi.Models
                 regUserName = value;
             }
         }
+        [DisplayName("Status")]
         public UserStatus StatusOfUser
         {
             get
@@ -51,6 +56,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Last Name")]
         public string RegUserLastName
         {
             get
@@ -64,6 +70,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("City")]
         public string RegUserCity
         {
             get
@@ -77,6 +84,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Country")]
         public string RegUserCountry
         {
             get
@@ -90,6 +98,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Location change")]
         public bool LocationChange
         {
             get
@@ -103,6 +112,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Part/Full time")]
         public JobType RegUserPartFull
         {
             get
@@ -116,8 +126,7 @@ namespace HRApi.Models
             }
         }
 
-
-
+        [DisplayName("Experience")]
         public string WorkXp
         {
             get
@@ -131,6 +140,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Keywords")]
         public string RegUserKeyword
         {
             get
@@ -145,6 +155,7 @@ namespace HRApi.Models
         }
         public ICollection<AutoGenHistory> WorkHistory { get; set; }
 
+        [DisplayName("Sex")]
         public Sex RegUserSex
         {
             get
@@ -158,6 +169,9 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Date of birth")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime RegUserDoB
         {
             get
@@ -171,6 +185,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Additional information")]
         public string RegUserAdditionalInfo
         {
             get

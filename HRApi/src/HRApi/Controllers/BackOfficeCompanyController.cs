@@ -35,31 +35,31 @@ namespace HRApi.Controllers
         // GET: BackEnd
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Companies.ToListAsync());
+            return View("~/Views/BackOffice/Company/Index.cshtml",await _context.Companies.ToListAsync());
         }
 
         // GET: BackEnd/Details/5
-        public IActionResult Details(string companyName)
+        public IActionResult Details(int? id)
         {
-            if (companyName == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var company = _context.Companies
-                .FirstOrDefault(m => m.CompanyName == companyName);
+                .FirstOrDefault(m => m.CompanyId == id);
             if (company == null)
             {
                 return NotFound();
             }
 
-            return View(company);
+            return View("~/Views/BackOffice/Company/Details.cshtml", company);
         }
 
         // GET: BackEnd/Create
         public IActionResult Create()
         {
-            return View();
+            return View("~/Views/BackOffice/Company/Create.cshtml");
         }
 
         // POST: BackEnd/Create
@@ -75,24 +75,24 @@ namespace HRApi.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(company);
+            return View("~/Views/BackOffice/Company/Index.cshtml",company);
         }
 
         // GET: BackEnd/Edit/5
         [HttpGet("EditCompany")]
-        public IActionResult Edit(string companyName)
+        public IActionResult Edit(int? id)
         {
-            if (companyName == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var company = _context.Companies.FirstOrDefault(c => c.CompanyName == companyName);
+            var company = _context.Companies.FirstOrDefault(c => c.CompanyId == id);
             if (company == null)
             {
                 return NotFound();
             }
-            return View(company);
+            return View("~/Views/BackOffice/Company/Edit.cshtml",company);
         }
 
         // POST: BackEnd/Edit/5
@@ -101,9 +101,9 @@ namespace HRApi.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string companyName , [Bind("CompanyName,CompanyDesc,CompanyCity,CompanyCountry,CompanyPhone,CompanyEmail,CompanyWebSite")] Company company)
+        public async Task<IActionResult> Edit(int? id , [Bind("CompanyName,CompanyDesc,CompanyCity,CompanyCountry,CompanyPhone,CompanyEmail,CompanyWebSite")] Company company)
         {
-            if (companyName == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -128,7 +128,7 @@ namespace HRApi.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(company);
+            return View("~/Views/BackOffice/Company/Index.cshtml",company);
         }
 
         // GET: BackEnd/Delete/5
@@ -146,7 +146,7 @@ namespace HRApi.Controllers
                 return NotFound();
             }
 
-            return View(company);
+            return View("~/Views/BackOffice/Company/Delete.cshtml",company);
         }
 
         // POST: BackEnd/Delete/5

@@ -11,39 +11,39 @@ using Microsoft.AspNetCore.Authorization;
 namespace HRApi.Controllers
 {
     [Authorize("SuperUser")]
-   
+
     public class BackOfficeUserController : Controller
     {
         private readonly HRContext _context;
 
         public BackOfficeUserController(HRContext context)
         {
-            _context = context;    
+            _context = context;
         }
 
         // GET: BackOfficeUser
         public async Task<IActionResult> Index()
         {
-            
+
             return View("~/Views/BackOffice/User/Index.cshtml", await _context.RegUsers.ToListAsync());
         }
 
         // GET: BackOfficeUser/Details/5
-        public async Task<IActionResult> Details(string userName)
+        public async Task<IActionResult> Details(string id)
         {
-            if (userName == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var regUser = await _context.RegUsers
-                .SingleOrDefaultAsync(m => m.UserName == userName);
+                .SingleOrDefaultAsync(m => m.Id == id);
             if (regUser == null)
             {
                 return NotFound();
             }
 
-            return View(regUser);
+            return View("~/Views/BackOffice/User/Details.cshtml", regUser);
         }
 
         [HttpGet("GetUserByKeyword")]
@@ -56,73 +56,103 @@ namespace HRApi.Controllers
             return user;
         }
 
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var regUser = await _context.RegUsers
+                .SingleOrDefaultAsync(m => m.Id == id);
+            if (regUser == null)
+            {
+                return NotFound();
+            }
+
+            return View("~/Views/BackOffice/User/Edit.cshtml", regUser);
+        }
+
 
         //// POST: BackOfficeUser/Edit/5
         //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(string userName, [Bind("RegUserName,statusOfUser,RegUserLastName,RegUserCity,RegUserCountry,LocationChange,RegUserPartFull,WorkXp,RegUserKeyword,RegUserSex,RegUserDoB,RegUserAdditionalInfo,Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] RegUser regUser)
-        //{
-        //    if (userName != regUser.UserName)
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, [Bind("RegUserName,statusOfUser,RegUserLastName,RegUserCity,RegUserCountry,LocationChange,RegUserPartFull,WorkXp,RegUserKeyword,RegUserSex,RegUserDoB,RegUserAdditionalInfo,Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] RegUser regUser)
+        {
+            if (id != regUser.Id)
+            {
+                return NotFound();
+            }
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(regUser);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!RegUserExists(regUser.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction("Index");
-        //    }
-        //    return View(regUser);
-        //}
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(regUser);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!RegUserExists(regUser.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index");
+            }
+            return View("~/Views/BackOffice/User/Index.cshtml", regUser);
+        }
 
-        //// GET: BackOfficeUser/Delete/5
-        //public async Task<IActionResult> Delete(string userName)
-        //{
-        //    if (userName == null)
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpPost("CreateUser")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("UserName,RegUserName,RegUserLastName,RegUserEmail,RegUserPassword,RegUserCity,RegUserCountry,LocationChange,RegUserPartFull,WorkXp,RegUserKeyword,RegUserSex,RegUserDoB,RegUserAdditionalInfo")] RegUser user)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(user);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            return View("~/Views/BackOffice/User/Create.cshtml", user);
+        }
 
-        //    var regUser = await _context.RegUsers
-        //        .SingleOrDefaultAsync(m => m.UserName == userName);
-        //    if (regUser == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: BackOfficeUser/Delete/5
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //    return View(regUser);
-        //}
+            var regUser = await _context.RegUsers
+                .SingleOrDefaultAsync(m => m.Id == id);
+            if (regUser == null)
+            {
+                return NotFound();
+            }
 
-        //// POST: BackOfficeUser/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(string id)
-        //{
-        //    var regUser = await _context.RegUsers.SingleOrDefaultAsync(m => m.Id == id);
-        //    _context.RegUsers.Remove(regUser);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction("Index");
-        //}
-        //private bool RegUserExists(string id)
-        //{
-        //    return _context.RegUsers.Any(e => e.Id == id);
-        //}
+            return View("~/Views/BackOffice/User/Delete.cshtml", regUser);
+        }
+
+        // POST: BackOfficeUser/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var regUser = await _context.RegUsers.SingleOrDefaultAsync(m => m.Id == id);
+            _context.RegUsers.Remove(regUser);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+        private bool RegUserExists(string id)
+        {
+            return _context.RegUsers.Any(e => e.Id == id);
+        }
     }
 }

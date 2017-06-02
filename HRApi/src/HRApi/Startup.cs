@@ -191,7 +191,7 @@ namespace HRApi
                 config.MapRoute(
                     name: "Default",
                     template: "{controller}/{action}/{id?}",
-                    defaults: new { controller = "Account", action = "Login" });
+                    defaults: new { controller = "Job", action = "GetJob" });
             });
         }
 

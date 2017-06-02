@@ -1,4 +1,4 @@
-@model HRApi.Models.Job
+﻿@model HRApi.Models.Job
 
 @{
     ViewData["Title"] = "Details";
@@ -69,6 +69,6 @@
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.JobId">Edit</a> |
-    <a asp-action="Delete" asp-route-id="@Model.JobId">Delete</a> |
+    <a asp-action="Apply" asp-route-id="@Model.JobId">Apply</a> |
     <a asp-action="Index">Back to List</a>
 </div>

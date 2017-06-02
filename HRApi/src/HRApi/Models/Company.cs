@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace HRApi.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int CompanyId { get; set; }
 
+        [DisplayName("Name")]
         public string CompanyName
         {
             get
@@ -36,6 +38,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Descrition")]
         public string CompanyDesc
         {
             get
@@ -49,6 +52,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("City")]
         public string CompanyCity
         {
             get
@@ -62,6 +66,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Country")]
         public string CompanyCountry
         {
             get
@@ -75,6 +80,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Phone number")]
         public string CompanyPhone
         {
             get
@@ -88,6 +94,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Email")]
         public string CompanyEmail
         {
             get
@@ -101,6 +108,7 @@ namespace HRApi.Models
             }
         }
 
+        [DisplayName("Site")]
         public string CompanyWebSite
         {
             get

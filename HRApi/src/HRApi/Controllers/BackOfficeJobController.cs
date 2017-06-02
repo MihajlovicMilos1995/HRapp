@@ -45,5 +45,20 @@ namespace HRApi.Controllers
 
             return Ok(p);
         }
+
+        [Authorize (Roles ="SuperUser,HrManager")]
+        [HttpGet("GetJobByKeyword")]
+        public List<Job> GetJobsByKeyword([FromQuery]string keyword)
+        {
+            if (keyword != null)
+            {
+                var jobs = _context.Jobs.Where
+                    (j => j.JobKeyword
+                .Contains(keyword)).ToList();
+
+                return jobs;
+            }
+            return _context.Jobs.ToList();
+        }
     }
 }

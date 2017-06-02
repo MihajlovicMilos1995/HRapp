@@ -10,6 +10,7 @@ using Logon.Models.AccountViewModels;
 using HRApi.Models;
 using HRApi;
 using Logon.Services;
+using HRApi.Controllers;
 
 namespace Logon.Controllers
 {
@@ -517,7 +518,7 @@ namespace Logon.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(AccountController.Login), "Account");
+                return RedirectToAction(nameof(JobController.Index), "Job");
             }
         }
 
