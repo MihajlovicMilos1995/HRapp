@@ -22,7 +22,7 @@ namespace HRApi.Models
         private string jobKeyword;
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int JobId { get; set; }
 
         [DisplayName("Name")]
@@ -143,12 +143,12 @@ namespace HRApi.Models
         {
             get
             {
-                return JobSalary;
+                return jobSalary;
             }
 
             set
             {
-                JobSalary = value;
+                jobSalary = value;
             }
         }
     }

@@ -20,13 +20,13 @@ namespace HRApi.Controllers
         }
 
 
-        //[HttpGet("GetCompany")]
-        //public IEnumerable<Company> GetCompany()
-        //{
-        //    return _compctx.Companies.ToList();
-        //}
+        [HttpGet("GetCompany")]
+        public IEnumerable<Company> GetCompanies()
+        {
+            return _compctx.Companies.ToList();
+        }
 
-        [Authorize(Roles = ("SuperUser,HrManager"))]
+        //[Authorize(Roles = ("SuperUser,HrManager"))]
         [HttpGet("{companyId}")]
         public IActionResult GetCompany(int companyId, bool includeJob = false)
         {
@@ -49,7 +49,59 @@ namespace HRApi.Controllers
             }
 
             return Ok(p);
+        }
 
+        [HttpPost("Create")]
+        public IActionResult Create([Bind("CompanyName,CompanyDesc,CompanyCity,CompanyCountry,CompanyPhone,CompanyEmail,CompanyWebSite")]Company company)
+        {
+            var newcompany = _compctx.Companies.Add(company);
+            _compctx.SaveChanges();
+            return Ok(company);
+        }
+
+        [HttpPut("Edit")]
+        public IActionResult Edit([Bind("CompanyName,CompanyDesc,CompanyCity,CompanyCountry,CompanyPhone,CompanyEmail,CompanyWebSite")] Company company, int id)
+        {
+            if (company == null)
+            {
+                return BadRequest();
+            }
+
+            var todo = _compctx.Companies.FirstOrDefault(j => j.CompanyId == id);
+            if (User.Identity.IsAuthenticated)
+            {
+                todo.CompanyName = company.CompanyName;
+                todo.CompanyDesc = company.CompanyDesc;
+                todo.CompanyCity = company.CompanyCity;
+                todo.CompanyCountry = company.CompanyCountry;
+                todo.CompanyPhone = company.CompanyPhone;
+                todo.CompanyEmail = company.CompanyEmail;
+                todo.CompanyWebSite = company.CompanyWebSite;
+            }
+            _compctx.SaveChanges();
+            return Ok("Edited");
+        }
+
+        [HttpDelete("Delete")]
+        public IActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var company = _compctx.Companies.FirstOrDefault(c => c.CompanyId == id);
+            if (company == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                _compctx.Remove(company);
+                _compctx.SaveChanges();
+            }
+
+            return Ok("Deleted");
         }
 
         [HttpGet("SSP")]

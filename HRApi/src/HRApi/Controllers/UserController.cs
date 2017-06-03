@@ -13,7 +13,7 @@ using System.Collections;
 namespace HRApi.Controllers
 {
     [Route("[controller]")]
-    [Authorize]
+    //[Authorize]
     public class UserController : Controller
     {
         private HRContext _ctx;
@@ -30,7 +30,7 @@ namespace HRApi.Controllers
             //_roleManager = RoleManager;
         }
 
-        [Authorize(Roles = "SuperUser, HrManager")]
+        //[Authorize(Roles = "SuperUser, HrManager")]
         [HttpGet("GetUser")]
         public IEnumerable<UserViewModel> GetUser()
         {
@@ -44,7 +44,7 @@ namespace HRApi.Controllers
 
         }
 
-        [Authorize(Roles = "SuperUser,HrManager")]
+        //[Authorize(Roles = "SuperUser,HrManager")]
         [HttpGet("ListUserByRole")]
         public List<RegUser> ListUserByRole([FromQuery] string role)
         {
@@ -56,7 +56,7 @@ namespace HRApi.Controllers
             return users;
         }
 
-        [Authorize(Roles = "SuperUser,HrManager")]
+        //[Authorize(Roles = "SuperUser,HrManager")]
         [HttpGet("ListUserByKeyword")]
         public List<RegUser> ListUserByKeyword([FromQuery] string keyword)
         {
@@ -67,7 +67,7 @@ namespace HRApi.Controllers
             return user;
         }
 
-        [HttpGet("GetUsersInCompanyArea/{companyName}")]
+        //[HttpGet("GetUsersInCompanyArea/{companyName}")]
         [Authorize(Roles = ("SuperUser,HrManager"))]
         public List<RegUser> GetUsersInCompanyArea([FromQuery] string companyName)
         {
@@ -82,7 +82,7 @@ namespace HRApi.Controllers
             return user;
         }
 
-        [Authorize(Roles = "SuperUser, HrManager,RegUser")]
+        //[Authorize(Roles = "SuperUser, HrManager,RegUser")]
         [HttpPut("EditUser/{userName}")]
         public IActionResult EditUser([FromBody] RegUser regUser, string userName)
         {
@@ -115,7 +115,7 @@ namespace HRApi.Controllers
             return Ok("Edited");
         }
 
-        [Authorize(Roles="SuperUser,HrManager")]
+        //[Authorize(Roles="SuperUser,HrManager")]
         [HttpPut("UserAdditionalInfo/{userName}")]
         public IActionResult UserAdditionalInfo (RegUser regUser ,string userName,string additionalInfo)
         {

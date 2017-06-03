@@ -19,10 +19,11 @@ namespace HRApi.Controllers
         private HRContext _jobctx;
         private readonly UserManager<RegUser> _userManager;
 
-        public JobController(HRContext job, UserManager<RegUser> userManager /*, IHttpContextAccessor httpContextAccessor*/)
+        public JobController(HRContext job, UserManager<RegUser> userManager , IHttpContextAccessor httpContextAccessor)
         {
             _jobctx = job;
             _userManager = userManager;
+            var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             //var userId = httpContextAccessor.HttpContext. .FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
@@ -30,9 +31,14 @@ namespace HRApi.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            return View("~/VIews/General/Job/Index.cshtml", await _jobctx.Jobs.ToListAsync());
+            return View("~/Views/General/Job/Index.cshtml", await _jobctx.Jobs.ToListAsync());
         }
 
+        [HttpGet("GetJobJson")]
+        public IEnumerable<Job> GetJobJson()
+        {
+            return _jobctx.Jobs.ToList();
+        }
         [HttpGet("GetJobsByCity")]
         [AllowAnonymous]
         public List<Job> GetJobsByCity(string city)
@@ -92,25 +98,46 @@ namespace HRApi.Controllers
             return _jobctx.Jobs.ToList();
         }
 
-        //later
+        
         [HttpPost("ApplyForJob")]
         [AllowAnonymous]
-        public async Task<IActionResult> ApplyForJob(int? id, Job jobs, RegUser user, AutoGenHistory history)
+        public async Task<IActionResult> ApplyForJob(int id, Job jobs, RegUser users, AutoGenHistory history)
         {
             var job = await _jobctx.Jobs
             .SingleOrDefaultAsync(m => m.JobId == id);
 
-            string userId = _userManager.GetUserId(User);
-            //if (User.Identity.IsAuthenticated)
-            //{
-            //    _jobctx.History.Add(job);
-            //    _jobctx.History.Add(userId);
-            //}
-            //else
-            //  {
-            //    RedirectToAction("Login");
-            //  }
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var temp = new TempPosition();
+                temp.Job = job;
+                temp.RegUser = user;
+                _jobctx.History.Add(temp);
+                _jobctx.SaveChanges();
+            }
+            else
+            {
+                RedirectToAction("Login", "Account");
+            }
             return Ok("You applied for the position");
+        }
+
+        [HttpGet("Accept")]
+        public IActionResult Accept(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var jobapp = _jobctx.History.FirstOrDefault(j => j.Job.JobId == id);
+
+            if (User.IsInRole("HrManager"))
+            {
+
+            }
+            return Ok("User is accepted");
         }
 
         [HttpGet("Details")]
@@ -128,13 +155,20 @@ namespace HRApi.Controllers
                 return NotFound();
             }
 
-            return View("~/VIews/General/Job/Details.cshtml", job);
+            return Ok(job);
+            //return View("~/Views/General/Job/Details.cshtml", job);
         }
 
-        [Authorize(Roles = "SuperUser,HrManager")]
+        [Authorize(Roles ="SuperUser,HrManager")]
+        [HttpGet("Create")]
+        public IActionResult Create()
+        {
+            return View("~/Views/General/Job/Create.cshtml");
+        }
+
         [HttpPost("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("JobName,JobDesc,JobCity,JobCountry,JobCategories,JobSalary,JobReqXp,JobPartFull,JobKeyword")] Job job)
+        public async Task<IActionResult> Create([Bind("JobId,JobName,JobDesc,JobCity,JobCountry,JobCategories,JobSalary,JobReqXp,JobPartFull,JobKeyword")] Job job)
         {
             if (ModelState.IsValid)
             {
@@ -142,9 +176,42 @@ namespace HRApi.Controllers
                 await _jobctx.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View("~/VIews/General/Job/Create.cshtml", job);
+            return View("~/Views/General/Job/Index.cshtml", job);
         }
 
+        [HttpPost("CreateJson")]
+        public IActionResult CreateJson([Bind("JobId,JobName,JobDesc,JobCity,JobCountry,JobCategories,JobSalary,JobReqXp,JobPartFull,JobKeyword")] Job job)
+        {
+            _jobctx.Jobs.Add(job);
+            _jobctx.SaveChanges();
+            return Ok(job);
+        }
+
+        [HttpPut("EditJson")]
+        public IActionResult EditJson([Bind("JobId,JobName,JobDesc,JobCity,JobCountry,JobCategories,JobSalary,JobReqXp,JobPartFull,JobKeyword")] Job job,int id)
+        {
+            if (job == null)
+            {
+                return BadRequest();
+            }
+
+            var todo = _jobctx.Jobs.FirstOrDefault(j => j.JobId == id);
+            if (User.Identity.IsAuthenticated)
+            {
+                todo.JobName = job.JobName;
+                todo.JobDesc = job.JobDesc;
+                todo.JobCity = job.JobCity;
+                todo.JobCountry = job.JobCountry;
+                todo.JobKeyword = job.JobKeyword;
+                todo.JobPartFull = job.JobPartFull;
+                todo.JobReqXp = job.JobReqXp;
+                todo.JobSalary = job.JobSalary;
+                todo.JobCategories = job.JobCategories;
+
+            }
+            _jobctx.SaveChanges();
+            return Ok("Edited");
+        }
         [Authorize(Roles = "SuperUser,HrManager")]
         [HttpGet("Edit")]
         public async Task<IActionResult> Edit(int? id)
@@ -161,16 +228,16 @@ namespace HRApi.Controllers
                 return NotFound();
             }
 
-            return View("~/VIews/BackOffice/User/Edit.cshtml", job);
+            return View("~/Views/General/Job/Edit.cshtml", job);
         }
 
 
         //// POST: BackOfficeUser/Edit/5
         //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, [Bind("JobName,JobDesc,JobCity,JobCountry,JobCategories,JobSalary,JobReqXp,JobPartFull,JobKeyword")] Job job)
+        public async Task<IActionResult> Edit(int id, [Bind("JobName,JobDesc,JobCity,JobCountry,JobCategories,JobSalary,JobReqXp,JobPartFull,JobKeyword")] Job job)
         {
             if (id != job.JobId)
             {
@@ -197,9 +264,32 @@ namespace HRApi.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View("~/VIews/BackOffice/User/Index.cshtml", job);
+            return View("~/Views/General/Job/Index.cshtml", job);
         }
 
+        [HttpDelete("DeleteJson")]
+        public IActionResult DeleteJson(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var company = _jobctx.Jobs.FirstOrDefault(c => c.JobId == id);
+            if (company == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                _jobctx.Remove(company);
+                _jobctx.SaveChanges();
+            }
+
+            return Ok("Deleted");
+        }
+
+        [HttpGet("Delete")]
         [Authorize(Roles = "SuperUser,HrManager")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -208,23 +298,23 @@ namespace HRApi.Controllers
                 return NotFound();
             }
 
-            var regUser = await _jobctx.Jobs
+            var job = await _jobctx.Jobs
                 .SingleOrDefaultAsync(j => j.JobId == id);
-            if (regUser == null)
+            if (job == null)
             {
                 return NotFound();
             }
 
-            return View("~/VIews/General/Job/Delete.cshtml", regUser);
+            return View("~/Views/General/Job/Delete.cshtml", job);
         }
 
         // POST: BackOfficeUser/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var regUser = await _jobctx.Jobs.SingleOrDefaultAsync(j => j.JobId == id);
-            _jobctx.Jobs.Remove(regUser);
+            var job = await _jobctx.Jobs.SingleOrDefaultAsync(j => j.JobId == id);
+            _jobctx.Jobs.Remove(job);
             await _jobctx.SaveChangesAsync();
             return RedirectToAction("Index");
         }
