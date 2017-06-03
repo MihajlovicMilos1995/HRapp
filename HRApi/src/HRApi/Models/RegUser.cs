@@ -155,7 +155,7 @@ namespace HRApi.Models
         }
         public ICollection<AutoGenHistory> WorkHistory { get; set; }
 
-        public ICollection<TempPosition> Temp { get; set; }
+        //public ICollection<TempPosition> Temp { get; set; }
 
         [DisplayName("Sex")]
         public Sex RegUserSex

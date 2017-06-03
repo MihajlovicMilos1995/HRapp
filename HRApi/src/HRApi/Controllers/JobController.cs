@@ -19,7 +19,7 @@ namespace HRApi.Controllers
         private HRContext _jobctx;
         private readonly UserManager<RegUser> _userManager;
 
-        public JobController(HRContext job, UserManager<RegUser> userManager , IHttpContextAccessor httpContextAccessor)
+        public JobController(HRContext job, UserManager<RegUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _jobctx = job;
             _userManager = userManager;
@@ -98,35 +98,35 @@ namespace HRApi.Controllers
             return _jobctx.Jobs.ToList();
         }
 
-        
+
         [HttpPost("ApplyForJob")]
-        [AllowAnonymous]
-        public async Task<IActionResult> ApplyForJob(int id, Job jobs, RegUser users, AutoGenHistory history)
-        {
-            var job = await _jobctx.Jobs
-            .SingleOrDefaultAsync(m => m.JobId == id);
-
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-
-            if (User.Identity.IsAuthenticated)
-            {
-                var temp = new TempPosition();
-                temp.Job = job;
-                temp.RegUser = user;
-                _jobctx.History.Add(temp);
-                _jobctx.SaveChanges();
-            }
-            else
-            {
-                RedirectToAction("Login", "Account");
-            }
-            return Ok("You applied for the position");
-        }
+        //[Authorize("HrManager")]
+     //   public async Task<IActionResult> ApplyForJob(int id, Job jobs, RegUser users, AutoGenHistory history)
+     //   {
+     //       var job = await _jobctx.Jobs
+     //       .SingleOrDefaultAsync(m => m.JobId == id);
+     //
+     //       var user = await _userManager.GetUserAsync(HttpContext.User);
+     //
+     //       //   if (User.Identity.IsAuthenticated)
+     //       //   {
+     //       //       var temp = new TempPosition();
+     //       //       temp.job = job;
+     //       //       temp. = user;
+     //       //       _jobctx.Temp.Add(temp);
+     //       //       _jobctx.SaveChanges();
+     //       //}
+     //       else
+     //       {
+     //           RedirectToAction("Login", "Account");
+     //       }
+     //       return Ok("You applied for the position");
+     //   }
 
         [HttpGet("Accept")]
         public IActionResult Accept(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -159,7 +159,7 @@ namespace HRApi.Controllers
             //return View("~/Views/General/Job/Details.cshtml", job);
         }
 
-        [Authorize(Roles ="SuperUser,HrManager")]
+        [Authorize(Roles = "SuperUser,HrManager")]
         [HttpGet("Create")]
         public IActionResult Create()
         {
@@ -188,7 +188,7 @@ namespace HRApi.Controllers
         }
 
         [HttpPut("EditJson")]
-        public IActionResult EditJson([Bind("JobId,JobName,JobDesc,JobCity,JobCountry,JobCategories,JobSalary,JobReqXp,JobPartFull,JobKeyword")] Job job,int id)
+        public IActionResult EditJson([Bind("JobId,JobName,JobDesc,JobCity,JobCountry,JobCategories,JobSalary,JobReqXp,JobPartFull,JobKeyword")] Job job, int id)
         {
             if (job == null)
             {

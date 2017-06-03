@@ -9,6 +9,7 @@ using HRApi.Enums;
 using AutoMapper;
 using HRApi.Models.UserDTO;
 using System.Collections;
+using AutoMapper.XpressionMapper;
 
 namespace HRApi.Controllers
 {
@@ -32,15 +33,25 @@ namespace HRApi.Controllers
 
         //[Authorize(Roles = "SuperUser, HrManager")]
         [HttpGet("GetUser")]
-        public IEnumerable<UserViewModel> GetUser()
+        public IEnumerable<RegUser> GetUser()
         {
-            var user = _ctx.RegUsers.ToList();
 
-            IEnumerable<UserViewModel> model = _mapper.Map<List<RegUser>, List<UserViewModel>>(user);
+            return _ctx.RegUsers.ToList();
+            //var user = _ctx.RegUsers.ToList();
 
-            Mapper.AssertConfigurationIsValid();
+            //var config = new MapperConfiguration(cfg =>
+            //{
+            //    cfg.CreateMap<RegUser, UserViewModel>();
+            //});
 
-            return model;
+            //var mapper = config.CreateMapper();
+            //var source = new RegUser();
+            //var dest = mapper.Map<RegUser, UserViewModel>(user);
+            //IEnumerable<UserViewModel> model = _mapper.Map<List<RegUser>, List<UserViewModel>>(user);
+
+            //Mapper.AssertConfigurationIsValid();
+
+            //return model;
 
         }
 
@@ -117,7 +128,7 @@ namespace HRApi.Controllers
 
         //[Authorize(Roles="SuperUser,HrManager")]
         [HttpPut("UserAdditionalInfo/{userName}")]
-        public IActionResult UserAdditionalInfo (RegUser regUser ,string userName,string additionalInfo)
+        public IActionResult UserAdditionalInfo(RegUser regUser, string userName, string additionalInfo)
         {
             var user = _ctx.RegUsers.FirstOrDefault(u => u.UserName == userName);
             if (user == null)
