@@ -15,6 +15,8 @@ namespace HRApi.Models
         public DbSet<Company> Companies { get; set; }
 
         public DbSet<AutoGenHistory> History { get; set; }
+
+        //public DbSet<TempPosition> Temp { get; set; }
     }
 }
 
