@@ -131,18 +131,29 @@ namespace HRApi.Controllers
             return View("~/VIews/General/Job/Details.cshtml", job);
         }
 
-        [Authorize(Roles = "SuperUser,HrManager")]
-        [HttpPost("Create")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("JobName,JobDesc,JobCity,JobCountry,JobCategories,JobSalary,JobReqXp,JobPartFull,JobKeyword")] Job job)
+        [HttpGet("Create")]
+        [Authorize(Roles ="SuperUser,HrManager")]
+        public ActionResult Create()
         {
+            return View("~/Views/General/Job/Create.cshtml");
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public ActionResult Create(Job job)
+        {
+
             if (ModelState.IsValid)
             {
-                _jobctx.Add(job);
-                await _jobctx.SaveChangesAsync();
+                _jobctx.Jobs.Add(job);
+                _jobctx.SaveChanges();
+
                 return RedirectToAction("Index");
             }
-            return View("~/VIews/General/Job/Create.cshtml", job);
+            else
+            {
+                return View(job);
+            }
         }
 
         [Authorize(Roles = "SuperUser,HrManager")]
@@ -161,7 +172,7 @@ namespace HRApi.Controllers
                 return NotFound();
             }
 
-            return View("~/VIews/BackOffice/User/Edit.cshtml", job);
+            return View("~/VIews/General/User/Edit.cshtml", job);
         }
 
 
@@ -200,6 +211,7 @@ namespace HRApi.Controllers
             return View("~/VIews/BackOffice/User/Index.cshtml", job);
         }
 
+        [HttpGet("Delete")]
         [Authorize(Roles = "SuperUser,HrManager")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -223,8 +235,8 @@ namespace HRApi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            var regUser = await _jobctx.Jobs.SingleOrDefaultAsync(j => j.JobId == id);
-            _jobctx.Jobs.Remove(regUser);
+            var job = await _jobctx.Jobs.SingleOrDefaultAsync(j => j.JobId == id);
+            _jobctx.Jobs.Remove(job);
             await _jobctx.SaveChangesAsync();
             return RedirectToAction("Index");
         }
