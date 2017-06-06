@@ -1,5 +1,6 @@
 ﻿using HRApi.Enums;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -43,6 +44,7 @@ namespace HRApi.Models
             }
         }
         [DisplayName("Status")]
+        [JsonIgnore]
         public UserStatus StatusOfUser
         {
             get
@@ -154,8 +156,6 @@ namespace HRApi.Models
             }
         }
         public ICollection<AutoGenHistory> WorkHistory { get; set; }
-
-        //public ICollection<TempPosition> Temp { get; set; }
 
         [DisplayName("Sex")]
         public Sex RegUserSex

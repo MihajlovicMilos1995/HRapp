@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace HRApi.Models.UserDTO
+namespace HRApi.Models.UserViewModel
 {
-    public class BackEndUserViewModel
+    public class BackEndUserDTO
     {
         public string UserName { get; set; }
         public string RegUserName { get; set; }
@@ -19,7 +19,6 @@ namespace HRApi.Models.UserDTO
         public UserStatus StatusOfUser { get; set; }
         public string WorkXp { get; set; }
         public string RegUserKeyword { get; set; }
-
         public string RegUserAdditionalInfo { get; set; }
 
     }

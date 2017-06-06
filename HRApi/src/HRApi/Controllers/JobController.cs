@@ -19,12 +19,10 @@ namespace HRApi.Controllers
         private HRContext _jobctx;
         private readonly UserManager<RegUser> _userManager;
 
-        public JobController(HRContext job, UserManager<RegUser> userManager, IHttpContextAccessor httpContextAccessor)
+        public JobController(HRContext job, UserManager<RegUser> userManager)
         {
             _jobctx = job;
             _userManager = userManager;
-            var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            //var userId = httpContextAccessor.HttpContext. .FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
         [HttpGet("GetJob")]
@@ -100,31 +98,34 @@ namespace HRApi.Controllers
 
 
         [HttpPost("ApplyForJob")]
-        //[Authorize("HrManager")]
-     //   public async Task<IActionResult> ApplyForJob(int id, Job jobs, RegUser users, AutoGenHistory history)
-     //   {
-     //       var job = await _jobctx.Jobs
-     //       .SingleOrDefaultAsync(m => m.JobId == id);
-     //
-     //       var user = await _userManager.GetUserAsync(HttpContext.User);
-     //
-     //       //   if (User.Identity.IsAuthenticated)
-     //       //   {
-     //       //       var temp = new TempPosition();
-     //       //       temp.job = job;
-     //       //       temp. = user;
-     //       //       _jobctx.Temp.Add(temp);
-     //       //       _jobctx.SaveChanges();
-     //       //}
-     //       else
-     //       {
-     //           RedirectToAction("Login", "Account");
-     //       }
-     //       return Ok("You applied for the position");
-     //   }
+        public async Task<IActionResult> ApplyForJob(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var job = await _jobctx.Jobs
+            .SingleOrDefaultAsync(m => m.JobId == id);
 
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var hist = new AutoGenHistory();
+                hist.Job = job;
+                hist.RegUser = user;
+                _jobctx.History.Add(hist);
+                _jobctx.SaveChanges();
+            }
+            else
+            {
+                RedirectToAction("Login", "Account");
+            }
+            return Ok("You applied for the position");
+        }
+        //[Authorize("HrManager")]
         [HttpGet("Accept")]
-        public IActionResult Accept(int? id)
+        public IActionResult Accept(int? id, RegUser user)
         {
             if (id == null)
             {
@@ -132,12 +133,50 @@ namespace HRApi.Controllers
             }
 
             var jobapp = _jobctx.History.FirstOrDefault(j => j.Job.JobId == id);
+            if (User.IsInRole("HrManager"))
+            {
+                user.StatusOfUser = Enums.UserStatus.assigned;
+                _jobctx.SaveChanges();
+            }
+
+            return Ok("User is accepted");
+        }
+        //[Authorize("HrManager")]
+        [HttpPost("Declined")]
+        public IActionResult Declined(int? id, RegUser user)
+        {
+            var pos = _jobctx.History.FirstOrDefault(h => h.AutoGenHistoryId == id);
 
             if (User.IsInRole("HrManager"))
             {
-
+                user.StatusOfUser = Enums.UserStatus.available;
+                _jobctx.History.Remove(pos);
+                _jobctx.SaveChanges();
             }
-            return Ok("User is accepted");
+            else
+            {
+                RedirectToAction("Login", "Account");
+            }
+            return Ok("Applicant is declined!");
+        }
+
+
+        [HttpGet("DetailsJson")]
+        public async Task<IActionResult> DetailsJson(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var job = await _jobctx.Jobs
+                .SingleOrDefaultAsync(m => m.JobId == id);
+            if (job == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(job);
         }
 
         [HttpGet("Details")]
@@ -155,9 +194,9 @@ namespace HRApi.Controllers
                 return NotFound();
             }
 
-            return Ok(job);
-            //return View("~/Views/General/Job/Details.cshtml", job);
+            return View("~/Views/General/Job/Details.cshtml", job);
         }
+
 
         [Authorize(Roles = "SuperUser,HrManager")]
         [HttpGet("Create")]
