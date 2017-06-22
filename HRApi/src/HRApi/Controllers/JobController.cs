@@ -24,7 +24,6 @@ namespace HRApi.Controllers
             _jobctx = job;
             _userManager = userManager;
             var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            //var userId = httpContextAccessor.HttpContext. .FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
         [HttpGet("GetJob")]
@@ -101,30 +100,31 @@ namespace HRApi.Controllers
 
         [HttpPost("ApplyForJob")]
         //[Authorize("HrManager")]
-     //   public async Task<IActionResult> ApplyForJob(int id, Job jobs, RegUser users, AutoGenHistory history)
-     //   {
-     //       var job = await _jobctx.Jobs
-     //       .SingleOrDefaultAsync(m => m.JobId == id);
-     //
-     //       var user = await _userManager.GetUserAsync(HttpContext.User);
-     //
-     //       //   if (User.Identity.IsAuthenticated)
-     //       //   {
-     //       //       var temp = new TempPosition();
-     //       //       temp.job = job;
-     //       //       temp. = user;
-     //       //       _jobctx.Temp.Add(temp);
-     //       //       _jobctx.SaveChanges();
-     //       //}
-     //       else
-     //       {
-     //           RedirectToAction("Login", "Account");
-     //       }
-     //       return Ok("You applied for the position");
-     //   }
+        public async Task<IActionResult> ApplyForJob(int id, Job jobs, RegUser users)
+        {
+            var job = await _jobctx.Jobs
+            .SingleOrDefaultAsync(m => m.JobId == id);
+
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var hist = new AutoGenHistory();
+                hist.Job = job;
+                hist.RegUser = user;
+                _jobctx.History.Add(hist);
+                _jobctx.SaveChanges();
+            }
+            else
+            {
+                RedirectToAction("Login", "Account");
+            }
+
+            return Ok("You applied for the position");
+        }
 
         [HttpGet("Accept")]
-        public IActionResult Accept(int? id)
+        public IActionResult Accept(int? id, AutoGenHistory history)
         {
             if (id == null)
             {
@@ -135,9 +135,33 @@ namespace HRApi.Controllers
 
             if (User.IsInRole("HrManager"))
             {
-
+                _jobctx.SaveChanges();
+                return Ok("User is accepted to the position");
             }
-            return Ok("User is accepted");
+            else
+            {
+                RedirectToAction("GetJobJson");
+            }
+
+            return Ok();
+        }
+
+        [HttpGet("Declined")]
+        public IActionResult Declined(int? id, AutoGenHistory history)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            if (User.IsInRole("HrManager"))
+            {
+                var jobapp = _jobctx.History.FirstOrDefault(j => j.Job.JobId == id);
+
+                _jobctx.History.Remove(jobapp);
+                _jobctx.SaveChanges();
+            }
+            return Ok("User is declined");
         }
 
         [HttpGet("Details")]
@@ -155,8 +179,25 @@ namespace HRApi.Controllers
                 return NotFound();
             }
 
+            return View("~/Views/General/Job/Details.cshtml", job);
+        }
+
+        [HttpGet("DetailsJson")]
+        public async Task<IActionResult> DetailsJson(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var job = await _jobctx.Jobs
+                .SingleOrDefaultAsync(m => m.JobId == id);
+            if (job == null)
+            {
+                return NotFound();
+            }
+
             return Ok(job);
-            //return View("~/Views/General/Job/Details.cshtml", job);
         }
 
         [Authorize(Roles = "SuperUser,HrManager")]
