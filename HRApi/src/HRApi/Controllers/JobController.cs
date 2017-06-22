@@ -19,11 +19,10 @@ namespace HRApi.Controllers
         private HRContext _jobctx;
         private readonly UserManager<RegUser> _userManager;
 
-        public JobController(HRContext job, UserManager<RegUser> userManager, IHttpContextAccessor httpContextAccessor)
+        public JobController(HRContext job, UserManager<RegUser> userManager)
         {
             _jobctx = job;
             _userManager = userManager;
-            var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
         [HttpGet("GetJob")]
@@ -99,9 +98,12 @@ namespace HRApi.Controllers
 
 
         [HttpPost("ApplyForJob")]
-        //[Authorize("HrManager")]
-        public async Task<IActionResult> ApplyForJob(int id, Job jobs, RegUser users)
+        public async Task<IActionResult> ApplyForJob(int? id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
             var job = await _jobctx.Jobs
             .SingleOrDefaultAsync(m => m.JobId == id);
 
@@ -119,12 +121,11 @@ namespace HRApi.Controllers
             {
                 RedirectToAction("Login", "Account");
             }
-
             return Ok("You applied for the position");
         }
-
+        //[Authorize("HrManager")]
         [HttpGet("Accept")]
-        public IActionResult Accept(int? id, AutoGenHistory history)
+        public IActionResult Accept(int? id, RegUser user)
         {
             if (id == null)
             {
@@ -132,36 +133,50 @@ namespace HRApi.Controllers
             }
 
             var jobapp = _jobctx.History.FirstOrDefault(j => j.Job.JobId == id);
+            if (User.IsInRole("HrManager"))
+            {
+                user.StatusOfUser = Enums.UserStatus.assigned;
+                _jobctx.SaveChanges();
+            }
+
+            return Ok("User is accepted");
+        }
+        //[Authorize("HrManager")]
+        [HttpPost("Declined")]
+        public IActionResult Declined(int? id, RegUser user)
+        {
+            var pos = _jobctx.History.FirstOrDefault(h => h.AutoGenHistoryId == id);
 
             if (User.IsInRole("HrManager"))
             {
+                user.StatusOfUser = Enums.UserStatus.available;
+                _jobctx.History.Remove(pos);
                 _jobctx.SaveChanges();
-                return Ok("User is accepted to the position");
             }
             else
             {
-                RedirectToAction("GetJobJson");
+                RedirectToAction("Login", "Account");
             }
-
-            return Ok();
+            return Ok("Applicant is declined!");
         }
 
-        [HttpGet("Declined")]
-        public IActionResult Declined(int? id, AutoGenHistory history)
+
+        [HttpGet("DetailsJson")]
+        public async Task<IActionResult> DetailsJson(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            if (User.IsInRole("HrManager"))
+            var job = await _jobctx.Jobs
+                .SingleOrDefaultAsync(m => m.JobId == id);
+            if (job == null)
             {
-                var jobapp = _jobctx.History.FirstOrDefault(j => j.Job.JobId == id);
-
-                _jobctx.History.Remove(jobapp);
-                _jobctx.SaveChanges();
+                return NotFound();
             }
-            return Ok("User is declined");
+
+            return Ok(job);
         }
 
         [HttpGet("Details")]
@@ -182,23 +197,6 @@ namespace HRApi.Controllers
             return View("~/Views/General/Job/Details.cshtml", job);
         }
 
-        [HttpGet("DetailsJson")]
-        public async Task<IActionResult> DetailsJson(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var job = await _jobctx.Jobs
-                .SingleOrDefaultAsync(m => m.JobId == id);
-            if (job == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(job);
-        }
 
         [Authorize(Roles = "SuperUser,HrManager")]
         [HttpGet("Create")]

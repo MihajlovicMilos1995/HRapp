@@ -138,6 +138,7 @@ namespace HRApi.Models
         }
 
         [DisplayName("Salary")]
+
         [RegularExpression("^[0-9]*$", ErrorMessage = "Salary must be numeric")]
         public string JobSalary
         {

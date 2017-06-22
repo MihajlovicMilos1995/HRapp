@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using HRApi.Models.UserDTO;
+using HRApi.Models.UserViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +11,10 @@ namespace HRApi.Models.Maps
     {
         public MappingProfile()
         {
-            CreateMap<RegUser, UserViewModel>();
-            CreateMap<UserViewModel, RegUser>();
-            CreateMap<RegUser, BackEndUserViewModel>();
-            CreateMap<BackEndUserViewModel, RegUser>();
+            CreateMap<RegUser, UserDTO>();
+            CreateMap<UserDTO, RegUser>();
+            CreateMap<RegUser, BackEndUserDTO>();
+            CreateMap<BackEndUserDTO, RegUser>();
         }
     }
 }

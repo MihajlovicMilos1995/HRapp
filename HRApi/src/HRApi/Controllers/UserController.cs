@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 using HRApi.Enums;
 using AutoMapper;
-using HRApi.Models.UserDTO;
+using HRApi.Models.UserViewModel;
 using System.Collections;
 using AutoMapper.XpressionMapper;
 
@@ -35,23 +35,19 @@ namespace HRApi.Controllers
         [HttpGet("GetUser")]
         public IEnumerable<RegUser> GetUser()
         {
+            var user = _ctx.RegUsers.ToList();
 
-            return _ctx.RegUsers.ToList();
-            //var user = _ctx.RegUsers.ToList();
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<RegUser, UserDTO>();
+            });
 
-            //var config = new MapperConfiguration(cfg =>
-            //{
-            //    cfg.CreateMap<RegUser, UserViewModel>();
-            //});
+            var mapper = config.CreateMapper();
+            var source = new RegUser();
+            var dest = mapper.Map<RegUser, UserDTO>(source);
+            IEnumerable<UserDTO> model = _mapper.Map<List<RegUser>, List<UserDTO>>(user);
 
-            //var mapper = config.CreateMapper();
-            //var source = new RegUser();
-            //var dest = mapper.Map<RegUser, UserViewModel>(user);
-            //IEnumerable<UserViewModel> model = _mapper.Map<List<RegUser>, List<UserViewModel>>(user);
-
-            //Mapper.AssertConfigurationIsValid();
-
-            //return model;
+            return user;
 
         }
 
@@ -78,8 +74,8 @@ namespace HRApi.Controllers
             return user;
         }
 
-        //[HttpGet("GetUsersInCompanyArea/{companyName}")]
-        [Authorize(Roles = ("SuperUser,HrManager"))]
+        [HttpGet("GetUsersInCompanyArea/{companyName}")]
+        //[Authorize(Roles = ("SuperUser,HrManager"))]
         public List<RegUser> GetUsersInCompanyArea([FromQuery] string companyName)
         {
             var comp = _ctx.Companies.Find(companyName);
@@ -148,7 +144,7 @@ namespace HRApi.Controllers
             if (searchString != null)
             {
                 User = User.Where(u => u.RegUserName.Contains(searchString)
-                                        || u.RegUserKeyword.Contains(searchString));
+                                       || u.UserName.Contains(searchString));
             }
 
             if (sortBy == "Des")

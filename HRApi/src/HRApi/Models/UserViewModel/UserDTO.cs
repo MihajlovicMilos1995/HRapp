@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace HRApi.Models.UserDTO
+namespace HRApi.Models.UserViewModel
 {
-    public class UserViewModel
+    public class UserDTO
     {
         public string RegUserName { get; set; }
         public string RegUserLastName { get; set; }
